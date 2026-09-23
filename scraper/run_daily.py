@@ -13,11 +13,14 @@ from pathlib import Path
 
 
 COLLECTORS = {
+    "google_flights": "google_flights.py",
     "airindiaexpress": "airindiaexpress.py",
     "akasaair": "akasaair.py",
     "spicejet": "spicejet.py",
     "yatra": "yatra.py",
 }
+
+DEFAULT_COLLECTORS = ["google_flights"]
 
 
 def run_collector(source: str, scraper_dir: Path, headed: bool) -> dict:
@@ -58,7 +61,7 @@ def main() -> None:
     parser.add_argument("--headed", action="store_true", help="show Chromium for Yatra")
     parser.add_argument("--workers", type=int, default=len(COLLECTORS), help="maximum simultaneous collectors")
     args = parser.parse_args()
-    selected = args.source or list(COLLECTORS)
+    selected = args.source or DEFAULT_COLLECTORS
     workers = max(1, min(args.workers, len(selected)))
     scraper_dir = Path(__file__).resolve().parent
 

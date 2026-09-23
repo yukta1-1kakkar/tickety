@@ -1,1 +1,5 @@
 *-live.log
+.env
+**/.env
+backend/data/raw/google_flights/
+backend/data/processed/google_flights/
