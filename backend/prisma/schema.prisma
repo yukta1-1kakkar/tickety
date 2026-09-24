@@ -57,24 +57,20 @@ model FareObservation {
   arrivalTime         DateTime?   @map("arrival_time") @db.Timestamptz(6)
   tripType            String      @default("one_way") @map("trip_type") @db.VarChar(20)
   cabin               String      @default("economy") @db.VarChar(30)
-  fareFamily          String?     @map("fare_family") @db.VarChar(80)
   stops               Int?
   durationMinutes     Int?        @map("duration_minutes")
   fare                Float?
-  baseFare            Float?      @map("base_fare")
-  taxes               Float?
-  userDevelopmentFee  Float?      @map("user_development_fee")
-  convenienceFee      Float?      @map("convenience_fee")
-  mandatoryFees       Float?      @map("mandatory_fees")
+  priceLevel          String?     @map("price_level") @db.VarChar(20)
+  lowestPrice         Float?      @map("lowest_price")
+  typicalPriceLow     Float?      @map("typical_price_low")
+  typicalPriceHigh    Float?      @map("typical_price_high")
   currency            String      @default("INR") @db.VarChar(10)
   source              String      @default("scraper") @db.VarChar(80)
   sourceType          String?     @map("source_type") @db.VarChar(80)
   sellerName          String?     @map("seller_name") @db.VarChar(100)
   sourceUrl           String?     @map("source_url") @db.Text
   availabilityStatus  String      @default("available") @map("availability_status") @db.VarChar(40)
-  seatsAvailable      Int?        @map("seats_available")
   noFlights           Boolean?    @map("no_flights")
-  soldOut             Boolean?    @map("sold_out")
   scrapeOutcome       String?     @map("scrape_outcome") @db.VarChar(80)
   dataQualityScore    Float?      @map("data_quality_score")
   cleaningStatus      String      @default("clean") @map("cleaning_status") @db.VarChar(30)

@@ -59,7 +59,10 @@ def test_parser_produces_flat_serpapi_schema():
     assert records[0]["flight_number"] == "6E2056"
     assert records[0]["departure_time"] == "08:10"
     assert records[0]["stops"] == 0
-    removed = {"base_fare", "taxes", "mandatory_fees", "seats_available", "sold_out"}
+    removed = {
+        "base_fare", "taxes", "user_development_fee", "convenience_fee",
+        "mandatory_fees", "seats_available", "sold_out",
+    }
     assert removed.isdisjoint(records[0])
 
 

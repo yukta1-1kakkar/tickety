@@ -1,5 +1,5 @@
 from datetime import date
-from typing import Optional, List
+from typing import List
 from pydantic import BaseModel, Field, field_validator, model_validator
 
 class FareIngestSchema(BaseModel):
@@ -12,8 +12,6 @@ class FareIngestSchema(BaseModel):
     observation_date: date = Field(..., description="Observation / Scraping Date (YYYY-MM-DD)", examples=["2026-08-25"])
     advance_purchase_days: int = Field(..., ge=0, description="Booking horizon in days", examples=[7])
     fare: float = Field(..., gt=0, description="Total fare in INR (must be > 0)", examples=[4850.0])
-    base_fare: Optional[float] = Field(None, gt=0, description="Base fare component in INR", examples=[4100.0])
-    taxes: Optional[float] = Field(None, ge=0, description="Taxes and airport fees in INR", examples=[750.0])
     currency: str = Field("INR", description="Three-letter ISO currency code", examples=["INR"])
     source: str = Field("scraper", description="Source portal or method (e.g., 'makemytrip', 'indigo', 'mock')", examples=["makemytrip"])
 

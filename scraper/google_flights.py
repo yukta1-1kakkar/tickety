@@ -15,10 +15,12 @@ from dotenv import load_dotenv
 if __package__:
     from .domestic_routes import DEFAULT_ROUTE_CSV, DomesticRoute, load_domestic_routes
     from .google_flights_parser import normalize_response
+    from .persistence import persist_scraper_output
     from .serpapi_client import SerpAPIClient, SerpAPIQuotaError
 else:
     from domestic_routes import DEFAULT_ROUTE_CSV, DomesticRoute, load_domestic_routes
     from google_flights_parser import normalize_response
+    from persistence import persist_scraper_output
     from serpapi_client import SerpAPIClient, SerpAPIQuotaError
 
 
@@ -156,7 +158,7 @@ def main() -> None:
     parser.add_argument("--data-dir", type=Path, default=DEFAULT_DATA_DIR)
     parser.add_argument("--max-routes", type=int, help="limit routes for a controlled smoke test")
     parser.add_argument("--dry-run", action="store_true", help="validate routes/config without API calls")
-    parser.add_argument("--no-etl", action="store_true", help=argparse.SUPPRESS)
+    parser.add_argument("--no-etl", action="store_true", help="save JSON without loading it into the database")
     args = parser.parse_args()
     logging.basicConfig(level=os.getenv("LOG_LEVEL", "INFO"), format="%(asctime)s %(levelname)s %(message)s")
 
@@ -184,6 +186,8 @@ def main() -> None:
         request_delay_seconds=_env_float("SERPAPI_REQUEST_DELAY_SECONDS", 1),
     )
     summary = scrape_routes(routes, args.lead_times, client, args.data_dir)
+    if not args.no_etl and summary["records"]:
+        persist_scraper_output(summary["output_path"])
     print(json.dumps({key: str(value) if isinstance(value, Path) else value for key, value in summary.items()}, indent=2))
     if summary["quota_exhausted"]:
         raise SystemExit(2)

@@ -167,8 +167,6 @@ def test_api_endpoints(client, db_session):
         "observation_date": "2026-08-25",
         "advance_purchase_days": 7,
         "fare": 4850.0,
-        "base_fare": 4100.0,
-        "taxes": 750.0,
         "currency": "INR",
         "source": "mock"
     }

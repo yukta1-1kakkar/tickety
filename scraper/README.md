@@ -1,6 +1,4 @@
-# VAYUSETU airfare collectors
-
-## Primary collector: SerpAPI Google Flights
+# VAYUSETU SerpAPI Google Flights collector
 
 `google_flights.py` reads the complete directional basket from
 `backend/data/processed/route_weights.csv`, validates both endpoints against
@@ -32,67 +30,32 @@ normalized output is stored under `backend/data/processed/google_flights`, and
 the run folder contains the flat scraper payload plus `failed_routes.json`.
 Timestamped filenames prevent a later scrape from overwriting an earlier one.
 
-Google Flights output is intentionally not auto-loaded into the unchanged ETL:
-its scraper-only airport-code schema and T+60 window differ from the existing
-database ingestion contract.
+Google Flights output is automatically loaded by the ETL when `DATABASE_URL`
+is configured. The adapter maps airport-code records to the existing weighted
+city route, accepts T+60, and persists SerpAPI price-insight fields. Use
+`--no-etl` when only JSON artifacts are wanted.
 
-`run_daily.py` now defaults to this collector. Legacy browser collectors remain
-available only when explicitly selected with `--source`.
-
-## Legacy collectors
-
-The implemented collectors cover the same 24 DGCA-weighted routes and T+1,
-T+7, T+15, T+30 and T+45 advance-purchase windows.
-
-| Source | Collector | Access |
-|---|---|---|
-| Air India Express | `airindiaexpress.py` | Public browser flow; permission/policy review required |
-| Akasa Air | `akasaair.py` | Browser flow; written permission required |
-| SpiceJet | `spicejet.py` | Browser flow; written permission required |
-| Yatra | `yatra.py` | Reviewed public `/flight-schedule/` pages only |
-
-The non-functional API placeholders for IndiGo, Air India, Skyscanner,
-Cleartrip, Ixigo, MakeMyTrip, Goibibo and EaseMyTrip were removed. They can be
-restored later only when the team has an approved API/feed or written access.
+Google Flights via SerpAPI is the only active scraper source. Individual
+airline and OTA browser collectors are not included.
 
 ## Install
 
 ```powershell
 cd scraper
 python -m pip install -r requirements.txt
-playwright install chromium firefox
 ```
 
 ## Cloud ETL
 
 Every completed full scrape writes its JSON output and then invokes the backend
 ETL automatically when `DATABASE_URL` is set. The ETL validates required
-fields, preserves unavailable/sold-out rows, separates available fare
-components, deduplicates daily flight offers, quarantines inconsistent records
-and IQR outliers, and stores raw payloads for audit.
+fields, preserves unavailable rows, stores available Google price insights,
+deduplicates daily flight offers, quarantines IQR outliers, and stores raw
+payloads for audit.
 
 ```powershell
 $env:DATABASE_URL="postgresql://USER:PASSWORD@HOST:5432/vayusetu?sslmode=require"
-python run_daily.py
-```
-
-`run_daily.py` starts all selected collectors simultaneously with a
-`ThreadPoolExecutor`. At completion it prints the measured thread-pool wall
-time, the equivalent sequential time (sum of the same collector durations),
-time saved, and speedup. The latest report is written to
-`last_tpe_benchmark.json`.
-
-Limit concurrency when the machine has less memory:
-
-```powershell
-python run_daily.py --workers 2
-```
-
-Run a selected authorized source:
-
-```powershell
-python run_daily.py --source yatra --headed
-python run_daily.py --source akasaair
+python google_flights.py
 ```
 
 Disable automatic loading when debugging locally:

@@ -56,8 +56,6 @@ def ingest_fare(db: Session, fare_data: FareIngestSchema) -> FareObservation:
     if existing_obs:
         # Update existing record
         existing_obs.fare = fare_data.fare
-        existing_obs.base_fare = fare_data.base_fare
-        existing_obs.taxes = fare_data.taxes
         existing_obs.currency = fare_data.currency
         existing_obs.source = fare_data.source
         existing_obs.created_at = datetime.utcnow()
@@ -73,8 +71,6 @@ def ingest_fare(db: Session, fare_data: FareIngestSchema) -> FareObservation:
             observation_date=fare_data.observation_date,
             advance_purchase_days=fare_data.advance_purchase_days,
             fare=fare_data.fare,
-            base_fare=fare_data.base_fare,
-            taxes=fare_data.taxes,
             currency=fare_data.currency,
             source=fare_data.source,
         )
@@ -123,8 +119,6 @@ def ingest_bulk_fares(db: Session, fare_list: List[FareIngestSchema]) -> Dict[st
             
             if existing:
                 existing.fare = item.fare
-                existing.base_fare = item.base_fare
-                existing.taxes = item.taxes
                 existing.currency = item.currency
                 existing.source = item.source
                 updated_count += 1
@@ -136,8 +130,6 @@ def ingest_bulk_fares(db: Session, fare_list: List[FareIngestSchema]) -> Dict[st
                     observation_date=item.observation_date,
                     advance_purchase_days=item.advance_purchase_days,
                     fare=item.fare,
-                    base_fare=item.base_fare,
-                    taxes=item.taxes,
                     currency=item.currency,
                     source=item.source,
                 )

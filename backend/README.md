@@ -157,8 +157,6 @@ uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
   "observation_date": "2026-08-25",
   "advance_purchase_days": 7,
   "fare": 4850.0,
-  "base_fare": 4100.0,
-  "taxes": 750.0,
   "currency": "INR",
   "source": "makemytrip"
 }

@@ -9,7 +9,7 @@ import json
 import math
 import uuid
 from collections import defaultdict
-from datetime import date, datetime, timezone
+from datetime import date, datetime, time, timedelta, timezone
 from pathlib import Path
 from typing import Any, Iterable
 
@@ -25,13 +25,9 @@ from app.database.models import (
 )
 
 
-ADVANCE_WINDOWS = {1, 7, 15, 30, 45}
-SUPPORTED_OUTPUTS = {
-    "airindiaexpress_top_24_routes.json",
-    "akasaair_top_24_routes.json",
-    "spicejet_top_24_routes.json",
-    "yatra_top_24_routes.json",
-}
+ADVANCE_WINDOWS = {1, 7, 15, 30, 60}
+IST = timezone(timedelta(hours=5, minutes=30))
+SUPPORTED_OUTPUTS = {"google_flights_routes.json"}
 NULL_STRINGS = {"", "n/a", "na", "none", "null", "unknown", "-"}
 
 
@@ -95,7 +91,25 @@ def _datetime(value: Any) -> datetime | None:
     return parsed
 
 
+def _flight_datetime(value: Any, travel_date: date | None) -> datetime | None:
+    parsed = _datetime(value)
+    if parsed or not travel_date:
+        return parsed
+    text = _text(value)
+    if not text:
+        return None
+    try:
+        clock = time.fromisoformat(text)
+    except ValueError:
+        return None
+    return datetime.combine(travel_date, clock, tzinfo=IST)
+
+
 def _route_id(record: dict[str, Any]) -> str | None:
+    origin_city = _text(record.get("origin_city"))
+    destination_city = _text(record.get("destination_city"))
+    if origin_city and destination_city:
+        return f"{origin_city}-{destination_city}".upper().replace(" ", "")
     route = _text(record.get("route_id"))
     if route:
         return route.upper().replace(" ", "")
@@ -119,7 +133,6 @@ def _fingerprint(record: dict[str, Any]) -> str:
         if record.get("departure_time") else None,
         "advance_days": record["advance_purchase_days"],
         "observation_date": record["observation_date"].isoformat(),
-        "fare_family": record.get("fare_family"),
     }
     encoded = json.dumps(identity, sort_keys=True, separators=(",", ":")).encode()
     return hashlib.sha256(encoded).hexdigest()
@@ -127,11 +140,11 @@ def _fingerprint(record: dict[str, Any]) -> str:
 
 def normalize_record(raw: dict[str, Any], source_hint: str) -> tuple[dict[str, Any] | None, str | None]:
     route_id = _route_id(raw)
-    travel_date = _date(raw.get("travel_date"))
-    advance_days = _integer(raw.get("advance_purchase_days"))
-    collected_at = _datetime(raw.get("collection_timestamp")) or datetime.now(timezone.utc)
-    source = _text(raw.get("source"), source_hint) or source_hint
-    airline = _text(raw.get("airline_name"), source) or source
+    travel_date = _date(raw.get("travel_date") or raw.get("departure_date"))
+    advance_days = _integer(raw.get("advance_purchase_days") or raw.get("lead_time_days"))
+    collected_at = _datetime(raw.get("collection_timestamp") or raw.get("scrape_timestamp")) or datetime.now(timezone.utc)
+    source = _text(raw.get("source") or raw.get("price_source"), source_hint) or source_hint
+    airline = _text(raw.get("airline_name") or raw.get("airline"), source) or source
 
     missing = []
     if not route_id:
@@ -146,13 +159,15 @@ def normalize_record(raw: dict[str, Any], source_hint: str) -> tuple[dict[str, A
     total_fare = _number(raw.get("total_fare"), zero_allowed=False)
     availability = (_text(raw.get("availability_status"), "available") or "available").lower()
     no_flights = _boolean(raw.get("no_flights"))
-    sold_out = _boolean(raw.get("sold_out"))
     if no_flights:
         availability = "no_flights"
-    elif sold_out:
-        availability = "sold_out"
     elif total_fare is None and availability == "available":
         availability = "not_collected"
+
+    departure_time = _flight_datetime(raw.get("departure_time"), travel_date)
+    arrival_time = _flight_datetime(raw.get("arrival_time"), travel_date)
+    if departure_time and arrival_time and arrival_time <= departure_time:
+        arrival_time += timedelta(days=1)
 
     normalized = {
         "observation_id": _text(raw.get("observation_id")),
@@ -164,28 +179,24 @@ def normalize_record(raw: dict[str, Any], source_hint: str) -> tuple[dict[str, A
         "observation_date": collected_at.date(),
         "advance_purchase_days": advance_days,
         "collected_at": collected_at,
-        "departure_time": _datetime(raw.get("departure_time")),
-        "arrival_time": _datetime(raw.get("arrival_time")),
+        "departure_time": departure_time,
+        "arrival_time": arrival_time,
         "trip_type": (_text(raw.get("trip_type"), "one_way") or "one_way").lower(),
-        "cabin": (_text(raw.get("cabin"), "economy") or "economy").lower(),
-        "fare_family": _text(raw.get("fare_family")),
+        "cabin": (_text(raw.get("cabin") or raw.get("cabin_class"), "economy") or "economy").lower(),
         "stops": _integer(raw.get("stops")),
         "duration_minutes": _integer(raw.get("duration_minutes")),
         "fare": total_fare,
-        "base_fare": _number(raw.get("base_fare"), zero_allowed=False),
-        "taxes": _number(raw.get("taxes")),
-        "user_development_fee": _number(raw.get("user_development_fee")),
-        "convenience_fee": _number(raw.get("convenience_fee")),
-        "mandatory_fees": _number(raw.get("mandatory_fees")),
+        "price_level": _text(raw.get("price_level")),
+        "lowest_price": _number(raw.get("lowest_price"), zero_allowed=False),
+        "typical_price_low": _number(raw.get("typical_price_low"), zero_allowed=False),
+        "typical_price_high": _number(raw.get("typical_price_high"), zero_allowed=False),
         "currency": (_text(raw.get("currency"), "INR") or "INR").upper(),
         "source": source,
-        "source_type": _text(raw.get("source_type")),
-        "seller_name": _text(raw.get("seller_name")),
+        "source_type": _text(raw.get("source_type"), "aggregator_api" if raw.get("price_source") else None),
+        "seller_name": _text(raw.get("seller_name"), "Google Flights" if raw.get("price_source") else None),
         "source_url": _text(raw.get("source_url")),
         "availability_status": availability,
-        "seats_available": _integer(raw.get("seats_available")),
         "no_flights": no_flights,
-        "sold_out": sold_out,
         "scrape_outcome": _text(raw.get("scrape_outcome")),
         "data_quality_score": _number(raw.get("data_quality_score")),
         "cleaning_status": "clean" if total_fare is not None else "unavailable",
@@ -193,16 +204,6 @@ def normalize_record(raw: dict[str, Any], source_hint: str) -> tuple[dict[str, A
         "rejection_reason": None,
         "raw_payload": raw,
     }
-
-    components = [
-        normalized[name] for name in (
-            "base_fare", "taxes", "user_development_fee",
-            "convenience_fee", "mandatory_fees",
-        ) if normalized[name] is not None
-    ]
-    if total_fare is not None and components and sum(components) > total_fare * 1.05:
-        normalized["cleaning_status"] = "quarantined"
-        normalized["rejection_reason"] = "fare components exceed total fare"
 
     normalized["record_fingerprint"] = _fingerprint(normalized)
     return normalized, None
@@ -375,7 +376,7 @@ def load_scraper_file(path: Path, db: Session | None = None, *, dry_run: bool = 
 
 def discover_outputs(input_dir: Path) -> list[Path]:
     latest_by_name: dict[str, Path] = {}
-    for path in input_dir.rglob("*_top_24_routes.json"):
+    for path in input_dir.rglob("*.json"):
         if path.name not in SUPPORTED_OUTPUTS:
             continue
         current = latest_by_name.get(path.name)
