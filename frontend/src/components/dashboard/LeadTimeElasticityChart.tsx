@@ -1,6 +1,7 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import { FLIGHT_ROUTES, getLeadTimeCurveForRoute } from '../../mock/airfareData';
 import type { FlightRoute } from '../../types';
+import { useLiveDataRevision } from '../LiveDataGate';
 import { formatINR } from '../../utils/geo';
 import {
   ResponsiveContainer,
@@ -14,7 +15,7 @@ import {
   Cell,
   Legend,
 } from 'recharts';
-import { Clock, Navigation, Search, CheckCircle2, AlertTriangle } from 'lucide-react';
+import { Clock, Navigation } from 'lucide-react';
 
 const DIRECT_AIRLINE_SOURCES = ['Akasa Air', 'Air India Express', 'SpiceJet'] as const;
 
@@ -29,21 +30,20 @@ function fetchedAirlineLabel(route: FlightRoute) {
 }
 
 export const LeadTimeElasticityChart: React.FC = () => {
+  useLiveDataRevision();
   // All 24 routes + ALL option
   const [selectedRouteId, setSelectedRouteId] = useState<string>('ALL');
 
-  const selectedRouteObj = useMemo(() => {
-    if (selectedRouteId === 'ALL') return null;
-    return FLIGHT_ROUTES.find((r) => r.id === selectedRouteId) || null;
-  }, [selectedRouteId]);
+  const selectedRouteObj = selectedRouteId === 'ALL' ? null : FLIGHT_ROUTES.find(r => r.id === selectedRouteId) || null;
 
   // Backend averages for the five collection windows in the problem statement.
-  const elasticityData = useMemo(() => {
-    return getLeadTimeCurveForRoute(selectedRouteId);
-  }, [selectedRouteId]);
+  const elasticityData = getLeadTimeCurveForRoute(selectedRouteId);
 
   const shortLeadPoint = elasticityData[elasticityData.length - 1];
   const advancePoint = elasticityData[0];
+  if (!shortLeadPoint || !advancePoint) {
+    return <section className="intel-card p-6 sm:p-7"><h3 className="text-xl font-bold">Lead Time Elasticity</h3><p className="mt-2 text-sm text-[#64748B]">Not enough observations for a lead-time trend.</p></section>;
+  }
   const risesTowardDeparture = shortLeadPoint.avgFare >= advancePoint.avgFare;
 
   return (
@@ -56,10 +56,10 @@ export const LeadTimeElasticityChart: React.FC = () => {
             <span>DYNAMIC YIELD MANAGEMENT</span>
           </div>
           <h3 className="text-xl sm:text-2xl font-extrabold font-heading text-[#172033]">
-            Lead Time Elasticity Curve (T+45 → T+1)
+            Lead Time Elasticity Curve ({advancePoint.window} → {shortLeadPoint.window})
           </h3>
           <p className="text-xs text-[#64748B] mt-0.5">
-            Observed mean fares for the T+45, T+30, T+15, T+7 and T+1 collection windows.
+            Observed mean fares across the available collection windows. Missing windows are not estimated.
           </p>
         </div>
 
@@ -93,7 +93,7 @@ export const LeadTimeElasticityChart: React.FC = () => {
           </div>
 
           <div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border text-xs font-bold ${risesTowardDeparture ? 'bg-rose-50 border-rose-200 text-[#DC2626]' : 'bg-amber-50 border-amber-200 text-[#B45309]'}`}>
-            <span>T+1 difference: {shortLeadPoint.markupPercent >= 0 ? '+' : ''}{shortLeadPoint.markupPercent}%</span>
+            <span>{shortLeadPoint.window} difference: {shortLeadPoint.markupPercent >= 0 ? '+' : ''}{shortLeadPoint.markupPercent}%</span>
           </div>
         </div>
       </div>
@@ -107,9 +107,9 @@ export const LeadTimeElasticityChart: React.FC = () => {
             <span className="text-[#64748B]">({selectedRouteObj.distanceKm} km • {fetchedAirlineLabel(selectedRouteObj)})</span>
           </div>
           <div className="flex items-center gap-4">
-            <span>T+45 Fare: <strong className="text-[#16A34A]">{formatINR(advancePoint.avgFare)}</strong></span>
+            <span>{advancePoint.window} Fare: <strong className="text-[#16A34A]">{formatINR(advancePoint.avgFare)}</strong></span>
             <span>Equilibrium Base: <strong className="text-[#1769AA]">{formatINR(selectedRouteObj.referenceFare)}</strong></span>
-            <span>T+1 Fare: <strong className="text-[#DC2626]">{formatINR(shortLeadPoint.avgFare)}</strong></span>
+            <span>{shortLeadPoint.window} Fare: <strong className="text-[#DC2626]">{formatINR(shortLeadPoint.avgFare)}</strong></span>
           </div>
         </div>
       )}
@@ -211,7 +211,7 @@ export const LeadTimeElasticityChart: React.FC = () => {
             <span>Green = Lower Fare Pressure</span>
           </div>
           <span className="text-[#64748B] text-[11px] mt-1 block">
-            Yield multiplier below 1.15×; commonly seen in the T+45 and T+30 early-booking windows.
+            Observed yield multiplier below 1.15× relative to the available baseline.
           </span>
         </div>
 
@@ -221,7 +221,7 @@ export const LeadTimeElasticityChart: React.FC = () => {
             <span>Yellow = Moderate Fare Pressure</span>
           </div>
           <span className="text-[#64748B] text-[11px] mt-1 block">
-            Yield multiplier from 1.15× to below 1.60×; often associated with the T+15 window.
+            Observed yield multiplier from 1.15× to below 1.60× relative to the available baseline.
           </span>
         </div>
 
@@ -231,7 +231,7 @@ export const LeadTimeElasticityChart: React.FC = () => {
             <span>Red = High Fare Pressure</span>
           </div>
           <span className="text-[#64748B] text-[11px] mt-1 block">
-            Yield multiplier of 1.60× or more; commonly seen in the T+7 and T+1 short-lead windows. {risesTowardDeparture ? 'Current matched-cohort fares rise toward departure.' : 'Current data is inverted and may reflect date-specific demand or incomplete comparable inventory.'}
+            Observed yield multiplier of 1.60× or more. Collection windows may have different available inventory; this is not a forecast.
           </span>
         </div>
       </div>

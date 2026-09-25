@@ -12,6 +12,7 @@ from app.api.analytics import router as analytics_router
 from app.api.ingest import router as ingest_router
 from app.api.dashboard import router as dashboard_router
 from app.api.backtest import router as backtest_router
+from app.api.fares import router as fares_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -67,6 +68,7 @@ app.include_router(analytics_router)
 app.include_router(ingest_router)
 app.include_router(dashboard_router)
 app.include_router(backtest_router)
+app.include_router(fares_router)
 
 # Also mount under /api prefix
 app.include_router(health_router, prefix="/api")
@@ -76,6 +78,7 @@ app.include_router(analytics_router, prefix="/api")
 app.include_router(ingest_router, prefix="/api")
 app.include_router(dashboard_router, prefix="/api")
 app.include_router(backtest_router, prefix="/api")
+app.include_router(fares_router, prefix="/api")
 
 @app.get("/", tags=["Root"], summary="API Root Overview")
 def root():

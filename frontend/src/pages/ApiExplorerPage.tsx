@@ -17,7 +17,7 @@ import {
   Terminal,
 } from 'lucide-react';
 
-const API_BASE = (import.meta.env.VITE_API_URL || 'https://vayusetu.onrender.com/api').replace(/\/$/, '');
+import { API_BASE } from '../apiConfig';
 const SERVICE_BASE = API_BASE.replace(/\/api$/, '');
 
 type Endpoint = {

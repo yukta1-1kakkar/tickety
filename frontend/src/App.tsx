@@ -15,6 +15,7 @@ import { CpiPage } from './pages/CpiPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { DownloadsPage } from './pages/DownloadsPage';
 import { LeadTimePage } from './pages/LeadTimePage';
+import { SectorHeatmap } from './components/dashboard/SectorHeatmap';
 import { Login } from './pages/Login';
 import { ModulePage } from './pages/ModulePage';
 import { RouteBasketPage } from './pages/RouteBasketPage';
@@ -23,10 +24,11 @@ import { ScraperControlPage } from './pages/ScraperControlPage';
 import { Unauthorized } from './pages/Unauthorized';
 import { UserManagementPage } from './pages/UserManagementPage';
 import { UserGuidePage } from './pages/UserGuidePage';
+import { TicketyLayout, TicketyHome, TicketyFare, TicketyExplore, TicketyTrends, TicketyLegacyRedirect } from './pages/TicketyPage';
 
 function ScrollToTop() {
-  const { pathname } = useLocation();
-  useEffect(() => { window.scrollTo({ top: 0, behavior: 'smooth' }); }, [pathname]);
+  const { pathname, search } = useLocation();
+  useEffect(() => { window.scrollTo({ top: 0, behavior: 'instant' }); }, [pathname, search]);
   return null;
 }
 
@@ -36,12 +38,13 @@ function Guarded({ permission, children }: { permission: Permission; children: R
 
 function PortalLayout({ onReplayIntro }: { onReplayIntro: () => void }) {
   const { pathname } = useLocation();
+  useEffect(() => { document.title = 'VayuSetu Intelligence - India’s Airfare Analytics'; }, []);
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#F6F8FB] font-sans text-[#172033] antialiased selection:bg-[#1769AA]/15 selection:text-[#1769AA]">
+    <div className="vayusetu-workspace flex min-h-screen flex-col font-sans text-[#172033] antialiased selection:bg-[#1769AA]/15 selection:text-[#1769AA]">
         <Navbar key={pathname} />
-        <div className="pt-[65px]" />
-        <main className="mx-auto w-full max-w-7xl flex-1 px-4 pt-8 sm:px-6 lg:px-8"><Outlet /></main>
+        <div className="pt-[76px] lg:pt-[128px]" />
+        <main className="mx-auto w-full max-w-7xl flex-1 px-4 pt-8 sm:px-6 lg:px-8"><LiveDataGate><Outlet /></LiveDataGate></main>
         <footer className="mt-16 w-full border-t border-[#E2E8F0] bg-white py-8 text-xs text-[#64748B]">
           <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-4 sm:flex-row sm:px-6 lg:px-8">
             <div className="flex items-center gap-3"><VayuSetuLogo variant="horizontal" size="sm" showTagline={false} /><span className="text-[#CBD5E1]">|</span><span>Sovereign Airfare Intelligence & Price Indexing</span></div>
@@ -60,38 +63,48 @@ const modulePage = (permission: Permission, element: ReactElement) => <Guarded p
 function PortalRoutes({ onReplayIntro }: { onReplayIntro: () => void }) {
   return (
     <Routes>
+      <Route element={<TicketyLayout />}>
+        <Route path="/" element={<TicketyHome />} />
+        <Route path="/fare" element={<TicketyFare />} />
+        <Route path="/explore" element={<TicketyExplore />} />
+        <Route path="/trends" element={<TicketyTrends />} />
+      </Route>
+      <Route path="/tickety" element={<TicketyLegacyRedirect />} />
       <Route path="/login" element={<Login />} />
       <Route path="/unauthorized" element={<Unauthorized />} />
-      <Route element={<ProtectedRoute><LiveDataGate><PortalLayout onReplayIntro={onReplayIntro} /></LiveDataGate></ProtectedRoute>}>
+      <Route path="/vayusetu" element={<ProtectedRoute><PortalLayout onReplayIntro={onReplayIntro} /></ProtectedRoute>}>
         <Route index element={modulePage('dashboard', <DashboardPage />)} />
-        <Route path="dashboard" element={<Navigate to="/" replace />} />
+        <Route path="dashboard" element={<Navigate to="/vayusetu" replace />} />
+        <Route path="heatmap" element={modulePage('dashboard', <div className="pb-16"><h1 className="mb-6 text-3xl font-bold">Domestic Airfare Heatmap</h1><SectorHeatmap /></div>)} />
         <Route path="index" element={modulePage('airfare-index', <ApixPage />)} />
         <Route path="reports" element={modulePage('reports', <ModulePage icon={FileBarChart} eyebrow="Official outputs" title="Reports" description="Prepare and review institutional airfare price index reports for policy stakeholders." />)} />
         <Route path="downloads" element={modulePage('downloads', <DownloadsPage />)} />
         <Route path="cpi" element={modulePage('price-trends', <CpiPage />)} />
-        <Route path="price-trends" element={modulePage('price-trends', <Navigate to="/cpi" replace />)} />
+        <Route path="price-trends" element={modulePage('price-trends', <Navigate to="/vayusetu/cpi" replace />)} />
         <Route path="routes" element={modulePage('route-comparison', <RoutesPage />)} />
-        <Route path="route-comparison" element={modulePage('route-comparison', <Navigate to="/routes" replace />)} />
+        <Route path="route-comparison" element={modulePage('route-comparison', <Navigate to="/vayusetu/routes" replace />)} />
         <Route path="lead-time-elasticity" element={modulePage('lead-time-elasticity', <LeadTimePage />)} />
         <Route path="api-explorer" element={modulePage('api-explorer', <ApiExplorerPage />)} />
         <Route path="user-management" element={modulePage('user-management', <UserManagementPage />)} />
         <Route path="scraper-control" element={modulePage('scraping-scheduler', <ScraperControlPage />)} />
-        <Route path="scraping-scheduler" element={modulePage('scraping-scheduler', <Navigate to="/scraper-control" replace />)} />
+        <Route path="scraping-scheduler" element={modulePage('scraping-scheduler', <Navigate to="/vayusetu/scraper-control" replace />)} />
         <Route path="route-basket" element={modulePage('route-basket', <RouteBasketPage />)} />
         <Route path="system-settings" element={modulePage('system-settings', <ModulePage icon={Settings} eyebrow="Platform administration" title="System Settings" description="Review platform-level configuration for the VAYUSETU analytical environment." />)} />
         <Route path="user-guide" element={<UserGuidePage />} />
-        <Route path="analytics" element={modulePage('price-trends', <Navigate to="/cpi" replace />)} />
-        <Route path="data-quality" element={modulePage('airfare-index', <Navigate to="/index" replace />)} />
-        <Route path="data-sources" element={modulePage('airfare-index', <Navigate to="/index" replace />)} />
-        <Route path="methodology" element={modulePage('airfare-index', <Navigate to="/index" replace />)} />
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="analytics" element={modulePage('price-trends', <Navigate to="/vayusetu/cpi" replace />)} />
+        <Route path="data-quality" element={modulePage('airfare-index', <Navigate to="/vayusetu/index" replace />)} />
+        <Route path="data-sources" element={modulePage('airfare-index', <Navigate to="/vayusetu/index" replace />)} />
+        <Route path="methodology" element={modulePage('airfare-index', <Navigate to="/vayusetu/index" replace />)} />
+        <Route path="*" element={<Navigate to="/vayusetu" replace />} />
       </Route>
+      {['dashboard', 'index', 'reports', 'downloads', 'cpi', 'price-trends', 'routes', 'route-comparison', 'lead-time-elasticity', 'api-explorer', 'user-management', 'scraper-control', 'scraping-scheduler', 'route-basket', 'system-settings', 'user-guide', 'analytics', 'data-quality', 'data-sources', 'methodology', 'heatmap'].map(path => <Route key={path} path={`/${path}`} element={<Navigate to={path === 'dashboard' ? '/vayusetu' : `/vayusetu/${path}`} replace />} />)}
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 }
 
 export function App() {
-  const [showIntro, setShowIntro] = useState(() => !sessionStorage.getItem('vayusetu_intro_played'));
+  const [showIntro, setShowIntro] = useState(false);
 
   const handleIntroComplete = () => {
     sessionStorage.setItem('vayusetu_intro_played', 'true');

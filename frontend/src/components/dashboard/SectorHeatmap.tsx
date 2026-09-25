@@ -1,4 +1,5 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
+import { useLiveDataRevision } from '../LiveDataGate';
 import {
   FLIGHT_ROUTES,
   ROUTE_WEIGHTS_DATA,
@@ -8,7 +9,6 @@ import { formatINR, formatDelta } from '../../utils/geo';
 import type { LeadTimeDataPoint } from '../../types';
 import { CalendarRange, Grid3X3, Info, Plane, Route, Sparkles } from 'lucide-react';
 
-const WINDOWS = [1, 7, 15, 30, 45] as const;
 
 type SelectedCell = {
   route: string;
@@ -44,9 +44,11 @@ const heatTone = (change: number) => {
 };
 
 export const SectorHeatmap: React.FC = () => {
+  useLiveDataRevision();
+  const WINDOWS = [1, 7, 15, 30, getLeadTimeCurveForRoute("ALL").some(point => point.window === "T+60") ? 60 : getLeadTimeCurveForRoute("ALL").some(point => point.window === "T+45") ? 45 : 60];
   const [selected, setSelected] = useState<SelectedCell | null>(null);
 
-  const rows = useMemo(() => {
+  const rows = (() => {
     const weights = new Map(ROUTE_WEIGHTS_DATA.map((route) => [route.routeId, route.weight]));
 
     return FLIGHT_ROUTES.map((routeItem) => {
@@ -62,7 +64,7 @@ export const SectorHeatmap: React.FC = () => {
         points,
       };
     }).sort((left, right) => right.weight - left.weight || left.id.localeCompare(right.id));
-  }, []);
+  })();
 
   const availableCells = rows.reduce(
     (total, row) => total + WINDOWS.filter((days) => row.points.has(days)).length,
@@ -92,7 +94,7 @@ export const SectorHeatmap: React.FC = () => {
               Advance-Purchase Fare Heatmap
             </h3>
             <p className="mt-1.5 max-w-3xl text-xs leading-5 text-[#64748B] sm:text-sm">
-              Compare every monitored route across T+1, T+7, T+15, T+30 and T+45. Colours show each fare's movement against that route's T+45 baseline.
+              Domestic route fares across the available booking windows. Colours show each fare's movement against its available reference baseline.
             </p>
           </div>
 
@@ -115,7 +117,7 @@ export const SectorHeatmap: React.FC = () => {
 
       <div className="space-y-5 p-4 sm:p-6">
         <div className="flex flex-wrap items-center gap-x-5 gap-y-2 rounded-2xl border border-[#E2E8F0] bg-[#F8FAFC] px-4 py-3 text-[11px]">
-          <span className="mr-1 flex items-center gap-1.5 font-bold text-[#475569]"><Info className="h-3.5 w-3.5" /> Fare movement vs T+45</span>
+          <span className="mr-1 flex items-center gap-1.5 font-bold text-[#475569]"><Info className="h-3.5 w-3.5" /> Fare movement vs baseline</span>
           {[
             ['bg-emerald-500', 'Discounted', '< -5%'],
             ['bg-sky-500', 'Near baseline', '-5% to +5%'],
@@ -187,7 +189,7 @@ export const SectorHeatmap: React.FC = () => {
                         <button
                           type="button"
                           onClick={() => setSelected({ route: row.id, airline: row.airline, point })}
-                          aria-label={`${row.origin} to ${row.destination}, ${point.window}, ${formatINR(point.avgFare)}, ${formatDelta(point.markupPercent)} versus T+45`}
+                          aria-label={`${row.origin} to ${row.destination}, ${point.window}, ${formatINR(point.avgFare)}, ${formatDelta(point.markupPercent)} versus available baseline`}
                           className={`flex h-[54px] w-full flex-col items-center justify-center rounded-xl border px-2 shadow-sm transition duration-150 hover:-translate-y-0.5 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#1769AA] focus:ring-offset-2 ${tone.cell} ${active ? 'ring-2 ring-[#172033] ring-offset-2' : ''}`}
                         >
                           <span className="text-[13px] font-black leading-none">{formatINR(point.avgFare)}</span>
@@ -223,7 +225,7 @@ export const SectorHeatmap: React.FC = () => {
             </div>
             {[
               ['Average fare', formatINR(selected.point.avgFare)],
-              ['vs T+45', formatDelta(selected.point.markupPercent)],
+              ['vs baseline', formatDelta(selected.point.markupPercent)],
               ['Volatility', `${selected.point.volatility}/100`],
               ['Fare coverage', `${selected.point.seatInventoryShare.toFixed(1)}%`],
             ].map(([label, value]) => (

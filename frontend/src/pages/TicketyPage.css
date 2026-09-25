@@ -1,0 +1,268 @@
+.tickety {
+  --tk-ink: #203831; --tk-green: #226653; --tk-muted: #68756e; --tk-line: #dce2da;
+  --tk-paper: #f8f9f4; --tk-wash: #eef2e9;
+  background: var(--tk-paper); color: var(--tk-ink); min-height: 100vh; font-size: 14px;
+}
+.tickety * { box-sizing: border-box; }
+.tickety h1, .tickety h2, .tickety h3 { font-family: 'Manrope', 'Inter', sans-serif; }
+.tickety button, .tickety a, .tickety select, .tickety summary { -webkit-tap-highlight-color: transparent; }
+.tickety button, .tickety summary { cursor: pointer; }
+.tickety button:disabled { opacity: .45; cursor: not-allowed; }
+.tickety :is(button, a, input, select, summary):focus-visible { outline: 3px solid #3d8d72; outline-offset: 4px; }
+.tickety :is(input, select) { color: var(--tk-ink); min-width: 0; max-width: 100%; }
+.tickety em { font-style: normal; color: var(--tk-green); }
+.tickety svg { flex-shrink: 0; }
+.tk-container { width: min(1200px, calc(100% - 96px)); margin-inline: auto; }
+.tk-skip { position: absolute; top: -100px; padding: 14px; z-index: 100; background: var(--tk-ink); color: white; }
+.tk-skip:focus { top: 8px; left: 8px; }
+.tk-nav { border-bottom: 1px solid var(--tk-line); }
+.tk-nav-inner { max-width: 1400px; padding: 24px 48px; margin: auto; display: flex; align-items: center; gap: 42px; }
+.tk-brand { display: inline-flex; align-items: center; font: 800 30px/1 'Manrope', sans-serif; letter-spacing: -1.5px; color: var(--tk-ink); }
+.tk-brand-mark { display: flex; margin-right: 10px; color: var(--tk-green); }
+.tk-brand-period { color: var(--tk-green); }
+.tk-nav-links { display: flex; gap: 30px; margin-left: auto; font-size: 12px; color: #5e6b64; }
+.tk-nav-links a { padding: 10px 0; border-bottom: 1px solid transparent; }
+.tk-nav-links a.active { color: var(--tk-ink); border-color: var(--tk-green); }
+.tk-intelligence-link { display: inline-flex; align-items: center; gap: 16px; border-left: 1px solid var(--tk-line); padding: 8px 0 8px 30px; font-size: 12px; }
+.tk-menu { display: none; }
+.tk-kicker { font: 600 10px/1.5 'Inter', sans-serif; color: var(--tk-green); text-transform: uppercase; letter-spacing: .14em; }
+.tk-hero { text-align: center; padding-top: 60px; padding-bottom: 65px; }
+.tk-hero-path { display: flex; align-items: center; justify-content: center; margin: 0 auto 30px; width: 140px; height: 16px; }
+.tk-hero-path span { width: 5px; height: 5px; border: 1px solid #6a8b75; border-radius: 50%; }
+.tk-hero-path i { flex: 1; border-top: 1px dashed #9caf9f; margin: 0 5px; height: 17px; border-radius: 50% 50% 0 0; transform: translateY(-7px); }
+.tk-hero h1 { font-size: clamp(46px, 6vw, 78px); line-height: 1.15; font-weight: 650; letter-spacing: -.065em; margin: 18px 0 20px; }
+.tk-hero-copy { color: var(--tk-muted); font-size: 16px; line-height: 1.8; }
+.tk-search-area { margin-top: 42px; text-align: left; }
+.tk-search { display: grid; grid-template-columns: 1fr 38px 1fr 1.1fr auto; align-items: center; background: white; border: 1px solid #d4dcd1; border-radius: 8px; padding: 12px; box-shadow: 0 12px 24px -20px #29413430; }
+.tk-search-field { padding: 8px 20px; display: flex; flex-direction: column; min-width: 0; }
+.tk-search-field > span { display: flex; gap: 6px; align-items: center; color: var(--tk-muted); text-transform: uppercase; letter-spacing: .08em; font-size: 9px; font-weight: 600; }
+.tk-search-field :is(input, select) { width: 100%; border: 0; padding: 9px 0 2px; font-size: 16px; font-weight: 600; background: white; outline-offset: 1px; height: 38px; }
+.tk-date-field { border-left: 1px solid var(--tk-line); }
+.tk-swap { width: 34px; height: 34px; display: flex; justify-content: center; align-items: center; border: 1px solid var(--tk-line); border-radius: 50%; color: var(--tk-muted); }
+.tk-button { background: var(--tk-green); color: white; display: inline-flex; align-items: center; justify-content: center; gap: 22px; padding: 18px 26px; border-radius: 5px; font-weight: 600; font-size: 13px; transition: background .15s; min-height: 48px; }
+.tk-button:hover { background: #194f40; }
+.tk-search-caption { display: flex; justify-content: space-between; margin-top: 14px; color: var(--tk-muted); font-size: 10px; line-height: 1.6; padding: 0 4px; }
+.tk-hero-footnote { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 32px; font-size: 10px; color: var(--tk-muted); }
+.tk-status-dot, .tk-loading-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--tk-green); display: inline-block; }
+.tk-how { display: grid; grid-template-columns: 1.2fr 1fr 1fr 1fr; gap: 38px; padding: 42px 0; border-block: 1px solid var(--tk-line); }
+.tk-how h2 { margin-top: 9px; font-size: 22px; line-height: 1.4; font-weight: 600; letter-spacing: -.035em; }
+.tk-how-item { border-left: 1px solid var(--tk-line); padding-left: 28px; }
+.tk-how-item > span { color: var(--tk-green); font: 10px/1.5 'JetBrains Mono', monospace; }
+.tk-how h3 { font-size: 13px; font-weight: 650; margin: 16px 0 8px; }
+.tk-how-item p { color: var(--tk-muted); font-size: 12px; line-height: 1.8; }
+.tk-section { padding: 64px 0; scroll-margin-top: 24px; min-width: 0; }
+.tk-section-heading { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 28px; }
+.tk-section-heading h2 { font-size: clamp(25px, 3vw, 34px); font-weight: 600; line-height: 1.3; letter-spacing: -.045em; margin-top: 9px; }
+.tk-section-heading p:not(.tk-kicker) { color: var(--tk-muted); font-size: 12px; line-height: 1.8; margin-top: 10px; }
+.tk-text-button { display: inline-flex; align-items: center; justify-content: center; gap: 10px; color: var(--tk-green); font-weight: 600; font-size: 12px; padding: 10px 0; }
+.tk-explore-controls { display: grid; grid-template-columns: 1.3fr 1fr 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+.tk-explore-controls label { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.tk-explore-controls label > span { color: var(--tk-muted); font-size: 10px; }
+.tk-explore-controls :is(input, select) { width: 100%; min-height: 44px; font-size: 12px; padding: 10px 12px; border: 1px solid var(--tk-line); border-radius: 4px; background: transparent; }
+.tk-explore-query > div { position: relative; }
+.tk-explore-query svg { position: absolute; top: 13px; left: 12px; color: var(--tk-muted); }
+.tk-explore-query input { padding-left: 38px; }
+.tk-explore-compact { grid-template-columns: 200px 1fr; align-items: end; gap: 24px; }
+.tk-explore-compact p { color: var(--tk-muted); font-size: 11px; line-height: 1.9; }
+.tk-route-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); border: 1px solid var(--tk-line); border-radius: 6px; overflow: hidden; }
+.tk-route-card { display: flex; flex-direction: column; gap: 8px; text-align: left; padding: 26px; min-width: 0; background: #fcfdf9; border-bottom: 1px solid var(--tk-line); border-right: 1px solid var(--tk-line); transition: background .15s; }
+.tk-route-card:hover { background: #edf3e8; }
+.tk-route-card:focus-visible { outline-offset: -4px !important; }
+.tk-route-card-top, .tk-route-card-bottom { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-width: 0; }
+.tk-route-card-bottom { margin: 20px 0 4px; }
+.tk-route-card-bottom > strong { font: 650 26px/1.2 'Manrope', sans-serif; letter-spacing: -.05em; }
+.tk-route-name { display: inline-flex; align-items: center; gap: 12px; min-width: 0; flex-wrap: wrap; }
+.tk-route-name > span { overflow-wrap: anywhere; }
+.tk-route-name svg { width: 20px; color: #8b9d91; }
+.tk-route-card .tk-route-name { gap: 8px; font-size: 14px; font-weight: 650; }
+.tk-route-card .tk-route-name svg { width: 14px; }
+.tk-route-card-arrow { color: #8c9c8f; }
+.tk-route-card-caption { font-size: 10px; color: var(--tk-muted); line-height: 1.6; }
+.tk-level { display: inline-flex; align-items: center; gap: 6px; font-size: 10px; line-height: 1.5; text-transform: uppercase; letter-spacing: .08em; font-weight: 650; color: #667168; }
+.tk-level > span { display: block; flex-shrink: 0; width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+.tk-level-low { color: #246444; }
+.tk-level-typical { color: #51665d; }
+.tk-level-high { color: #a25632; }
+.tk-level-unavailable { font-size: 9px; letter-spacing: 0; text-transform: none; }
+.tk-pagination { margin-top: 20px; display: flex; justify-content: space-between; gap: 12px; align-items: center; font-size: 11px; color: var(--tk-muted); }
+.tk-pagination > div { display: flex; gap: 12px; }
+.tk-pagination button { display: flex; align-items: center; gap: 6px; min-height: 44px; padding: 8px; }
+.tk-fine-print, .tk-chart-note { color: var(--tk-muted); font-size: 10px; line-height: 1.9; margin-top: 18px; }
+.tk-coverage { display: flex; gap: 36px; align-items: center; justify-content: space-between; padding: 28px 0 48px; border-top: 1px solid var(--tk-line); color: var(--tk-muted); font-size: 11px; line-height: 1.8; }
+.tk-coverage > p > strong { color: var(--tk-ink); font-weight: 500; }
+.tk-coverage dl { display: flex; gap: 38px; }
+.tk-coverage dl > div { display: flex; flex-direction: column-reverse; }
+.tk-coverage dt { font-size: 9px; }
+.tk-coverage dd { font-size: 24px; color: var(--tk-ink); font-weight: 600; letter-spacing: -.04em; }
+.tk-coverage-time { font-size: 9px; }
+.tk-coverage-status { border-top: 1px solid var(--tk-line); padding: 30px 0; color: var(--tk-muted); font-size: 11px; }
+.tk-coverage-status button { text-decoration: underline; }
+.tk-engine { background: #203b31; color: #f2f5e9; }
+.tk-engine-inner { padding-block: 64px; display: grid; grid-template-columns: 1.2fr 1fr; gap: 100px; align-items: center; }
+.tk-engine .tk-kicker { color: #b4c8a8; }
+.tk-engine h2 { margin-top: 18px; font-size: 39px; font-weight: 500; line-height: 1.2; letter-spacing: -.045em; }
+.tk-engine p:not(.tk-kicker) { margin-top: 20px; font-size: 12px; line-height: 1.9; color: #b7c8ba; }
+.tk-engine a { display: inline-flex; gap: 24px; align-items: center; margin-top: 26px; padding: 12px 0; border-bottom: 1px solid #8ca78b; font-size: 12px; }
+.tk-engine-index > span { display: flex; align-items: center; gap: 18px; border-bottom: 1px solid #486053; padding: 20px 0; font-size: 12px; }
+.tk-engine-index svg { color: #adc6a0; }
+.tk-engine-index > p { font-size: 10px !important; }
+.tk-footer { display: flex; align-items: center; padding-block: 30px; gap: 32px; }
+.tk-footer .tk-brand { font-size: 24px; }
+.tk-footer .tk-brand-mark { display: none; }
+.tk-footer p, .tk-footer > span { font-size: 10px; color: var(--tk-muted); }
+.tk-footer > span { margin-left: auto; }
+.tk-state { text-align: center; padding: 44px 24px; border: 1px dashed var(--tk-line); background: #f1f4ed; border-radius: 6px; }
+.tk-state-mark { display: inline-flex; margin-bottom: 18px; color: #79917b; }
+.tk-state h3 { font-size: 18px; font-weight: 600; letter-spacing: -.02em; }
+.tk-state p { color: var(--tk-muted); font-size: 12px; line-height: 1.8; max-width: 520px; margin: 10px auto 8px; }
+.tk-state-error { border-color: #dbccba; background: #f9f3e9; }
+.tk-state .tk-button { margin-top: 20px; }
+.tk-search-area > .tk-state { margin-top: 16px; }
+.tk-route-loading { min-height: 180px; display: flex; align-items: center; justify-content: center; gap: 12px; font-size: 12px; color: var(--tk-muted); border: 1px dashed var(--tk-line); }
+.tk-loading-dot { animation: tk-pulse 1s ease-in-out infinite alternate; }
+.tk-page { padding-top: 20px; }
+.tk-result-page { padding-top: 30px; }
+.tk-result-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 20px; padding-bottom: 30px; border-bottom: 1px solid var(--tk-line); }
+.tk-result-toolbar :is(a, button) { display: flex; align-items: center; gap: 8px; font-size: 11px; min-height: 32px; color: var(--tk-muted); }
+.tk-result-page > .tk-state { margin-block: 42px; }
+.tk-result-top { display: grid; grid-template-columns: 1.25fr 1fr; gap: 80px; padding: 48px 0 26px; align-items: start; animation: tk-enter .18s ease-out; }
+.tk-fare-card h1 { font-size: 30px; font-weight: 600; line-height: 1.4; margin-top: 12px; letter-spacing: -.04em; }
+.tk-trip-meta { font-size: 11px; color: var(--tk-muted); margin-top: 9px; line-height: 1.8; }
+.tk-trip-meta span { padding-inline: 8px; }
+.tk-price-block { margin-top: 32px; }
+.tk-label { font-size: 10px; color: var(--tk-muted); text-transform: uppercase; letter-spacing: .1em; }
+.tk-big-fare { font: 600 clamp(56px, 6vw, 78px)/1.15 'Manrope', sans-serif; letter-spacing: -.07em; margin: 8px 0 12px; }
+.tk-price-block .tk-level { padding: 6px 10px; background: var(--tk-wash); border-radius: 3px; font-size: 11px; }
+.tk-fare-caption { color: var(--tk-muted); font-size: 10px; margin-top: 16px; line-height: 1.8; }
+.tk-evidence { display: flex; align-items: flex-start; gap: 10px; margin-top: 25px; color: var(--tk-green); font-size: 13px; line-height: 1.7; }
+.tk-source-note { color: var(--tk-muted); font-size: 10px; line-height: 1.8; margin-top: 14px; max-width: 400px; }
+.tk-price-context { border: 1px solid #d9e2d2; background: #eff3e9; border-radius: 6px; padding: 32px; }
+.tk-context-title { display: flex; align-items: center; gap: 10px; }
+.tk-context-title h2 { font-size: 17px; font-weight: 600; }
+.tk-price-context > p { color: var(--tk-muted); font-size: 11px; line-height: 1.8; margin-top: 10px; }
+.tk-price-context dl { margin-top: 30px; }
+.tk-price-context dl > div { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 16px 0; border-bottom: 1px solid #d7dfd0; }
+.tk-price-context dt { font-size: 11px; color: var(--tk-muted); }
+.tk-price-context dd { font-size: 17px; font-weight: 600; letter-spacing: -.03em; }
+.tk-price-context .tk-context-reading { margin-top: 25px; color: var(--tk-ink); }
+.tk-context-reading strong { text-transform: capitalize; }
+.tk-price-context .tk-fine-print { font-size: 10px; margin-top: 12px; }
+.tk-data-credit { padding-bottom: 26px; border-bottom: 1px solid var(--tk-line); font-size: 10px; color: var(--tk-muted); }
+.tk-data-credit span { padding-inline: 10px; }
+.tk-window-position { background: #eaf0e3; border-left: 2px solid #4e7658; padding: 12px 18px; flex-shrink: 0; }
+.tk-window-position span { display: block; font-size: 9px; text-transform: uppercase; letter-spacing: .1em; color: var(--tk-muted); }
+.tk-window-position strong { font-size: 12px; font-weight: 600; display: block; margin-top: 5px; }
+.tk-chart-surface { background: #fcfdf9; border: 1px solid var(--tk-line); border-radius: 6px; padding: 24px 24px 0; }
+.tk-chart-meta { display: flex; justify-content: space-between; gap: 12px; font-size: 10px; color: var(--tk-muted); }
+.tk-lead-chart { height: 270px; width: 100%; min-width: 0; margin-top: 16px; }
+.tk-axis-title { font-size: 10px; text-align: center; color: var(--tk-muted); margin: 8px 0 22px; }
+.tk-window-values { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); border-top: 1px solid var(--tk-line); }
+.tk-window-values > div { display: flex; flex-direction: column; align-items: center; padding: 20px 8px; gap: 7px; text-align: center; }
+.tk-window-values span { font-size: 10px; color: var(--tk-muted); }
+.tk-window-values strong { font-size: 15px; font-weight: 600; }
+.tk-window-values small { font-size: 9px; color: var(--tk-muted); }
+.tk-window-current { background: #edf3e5; border-top: 2px solid var(--tk-green); margin-top: -1px; }
+.tk-lead-section { padding-bottom: 24px; }
+.tk-history { border-block: 1px solid var(--tk-line); }
+.tk-history summary { padding-block: 20px; font-size: 12px; }
+.tk-history summary > span { float: right; color: var(--tk-muted); font-size: 10px; }
+.tk-history .tk-chart-note { margin: 0 0 20px; }
+.tk-history-chart { height: 260px; }
+.tk-sort { display: flex; align-items: center; gap: 12px; font-size: 10px; color: var(--tk-muted); }
+.tk-sort select { min-height: 44px; border: 1px solid var(--tk-line); background: transparent; padding: 10px 25px 10px 12px; border-radius: 4px; font-size: 12px; }
+.tk-flight-list { border-top: 1px solid var(--tk-line); }
+.tk-flight-card { display: grid; grid-template-columns: 1.3fr 1fr .7fr .6fr; align-items: center; gap: 24px; border-bottom: 1px solid var(--tk-line); padding: 26px 0; }
+.tk-airline { display: flex; align-items: center; gap: 14px; min-width: 0; }
+.tk-airline-symbol { width: 38px; height: 38px; border: 1px solid var(--tk-line); border-radius: 5px; display: flex; align-items: center; justify-content: center; color: #6f8874; flex-shrink: 0; }
+.tk-airline h3 { font-weight: 650; font-size: 13px; overflow-wrap: anywhere; }
+.tk-airline p { margin-top: 5px; font-size: 10px; color: var(--tk-muted); overflow-wrap: anywhere; }
+.tk-flight-times { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 10px; }
+.tk-flight-times strong { font-size: 16px; font-weight: 500; }
+.tk-flight-line { display: flex; align-items: center; color: #8da18f; }
+.tk-flight-line > span { flex: 1; border-top: 1px solid #bdcbbd; }
+.tk-flight-times small { grid-column: 1 / -1; font-size: 9px; color: var(--tk-muted); text-align: center; }
+.tk-flight-duration, .tk-flight-price { display: flex; flex-direction: column; gap: 6px; }
+.tk-flight-duration strong { font-weight: 500; font-size: 12px; }
+.tk-flight-duration span, .tk-flight-price span { font-size: 10px; color: var(--tk-muted); }
+.tk-flight-price { text-align: right; }
+.tk-flight-price strong { font-size: 23px; letter-spacing: -.045em; font-weight: 600; }
+.tk-search-progress { text-align: center; padding: 100px 20px; min-height: 480px; }
+.tk-search-progress h1 { font-size: 27px; font-weight: 500; letter-spacing: -.04em; margin-top: 34px; }
+.tk-search-progress p { color: var(--tk-muted); font-size: 12px; margin-top: 14px; }
+.tk-progress-line { position: relative; margin: auto; width: min(240px, 75%); border-top: 1px dashed #91a58e; }
+.tk-progress-line svg { position: absolute; top: -11px; color: var(--tk-green); background: var(--tk-paper); animation: tk-flight 2.5s ease-in-out infinite; }
+.tk-trends-page { padding-block: 80px; text-align: center; }
+.tk-trends-page h1 { font-size: clamp(40px, 5vw, 64px); letter-spacing: -.055em; line-height: 1.2; margin-top: 20px; font-weight: 600; }
+.tk-trends-page > p:not(.tk-kicker) { font-size: 13px; color: var(--tk-muted); line-height: 1.9; margin-top: 24px; }
+.tk-trend-explainer { display: flex; align-items: center; gap: 14px; width: min(500px, 100%); margin: 60px auto 0; }
+.tk-trend-explainer span { font: 12px 'JetBrains Mono', monospace; }
+.tk-trend-explainer i { flex: 1; border-top: 1px dashed #a5b6a0; }
+@keyframes tk-enter { from { opacity: .4; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes tk-pulse { from { opacity: .3; } to { opacity: 1; } }
+@keyframes tk-flight { from { left: 0; } to { left: calc(100% - 20px); } }
+@media (max-width: 1100px) {
+  .tk-container { width: calc(100% - 64px); } .tk-nav-inner { padding-inline: 32px; gap: 28px; } .tk-nav-links { gap: 20px; }
+  .tk-intelligence-link { padding-left: 20px; } .tk-search-field { padding-inline: 12px; } .tk-search .tk-button { padding-inline: 18px; gap: 10px; }
+  .tk-how { gap: 24px; } .tk-how-item { padding-left: 20px; } .tk-result-top { gap: 38px; } .tk-price-context { padding: 25px; }
+  .tk-coverage { flex-wrap: wrap; gap: 24px; } .tk-coverage dl { flex: 1; justify-content: space-evenly; } .tk-engine-inner { gap: 60px; }
+  .tk-route-card { padding: 20px; } .tk-route-card-bottom { flex-wrap: wrap; } .tk-flight-card { gap: 18px; }
+}
+@media (max-width: 800px) {
+  .tk-nav-inner { gap: 20px; flex-wrap: wrap; padding-block: 18px; } .tk-brand { font-size: 27px; }
+  .tk-nav-links { order: 4; margin: 0; display: none; width: 100%; padding-top: 14px; border-top: 1px solid var(--tk-line); }
+  .tk-nav-links.is-open { display: flex; } .tk-intelligence-link { margin-left: auto; border: 0; padding-left: 0; font-size: 11px; gap: 8px; }
+  .tk-menu { display: flex; justify-content: center; align-items: center; width: 40px; height: 40px; border: 1px solid var(--tk-line); border-radius: 4px; }
+  .tk-hero { padding-top: 40px; padding-bottom: 40px; } .tk-hero h1 { font-size: 56px; } .tk-hero-copy { font-size: 14px; }
+  .tk-search { grid-template-columns: 1fr 38px 1fr; row-gap: 14px; } .tk-date-field { grid-column: 1 / 3; border-left: 0; border-top: 1px solid var(--tk-line); padding-top: 14px; }
+  .tk-search .tk-button { margin-top: 10px; } .tk-how { grid-template-columns: 1fr 1fr; gap: 34px; } .tk-how-item:nth-child(3) { border-left: 0; padding-left: 0; }
+  .tk-route-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .tk-explore-controls { grid-template-columns: 1fr 1fr; }
+  .tk-result-top { grid-template-columns: 1fr; gap: 28px; } .tk-price-context { max-width: none; } .tk-big-fare { font-size: 70px; }
+  .tk-section-heading { align-items: flex-start; } .tk-section-heading h2 { font-size: 28px; } .tk-window-position { padding: 12px; max-width: 180px; }
+  .tk-flight-card { grid-template-columns: 1.2fr 1fr; gap: 20px; } .tk-flight-duration { padding-left: 52px; } .tk-flight-price { flex-direction: row; justify-content: flex-end; align-items: baseline; }
+  .tk-engine-inner { gap: 35px; } .tk-engine h2 { font-size: 32px; } .tk-engine-index > span { font-size: 11px; }
+}
+@media (max-width: 540px) {
+  .tk-container { width: calc(100% - 40px); } .tk-nav-inner { padding: 16px 20px; gap: 12px; }
+  .tk-brand { font-size: 25px; } .tk-brand-mark { margin-right: 6px; } .tk-intelligence-link { font-size: 10px; gap: 4px; } .tk-intelligence-link span { max-width: 86px; line-height: 1.5; }
+  .tk-nav-links { justify-content: space-between; gap: 14px; font-size: 12px; } .tk-nav-links a { padding-block: 14px; }
+  .tk-hero { padding-top: 30px; } .tk-hero-path { margin-bottom: 20px; } .tk-kicker { font-size: 9px; }
+  .tk-hero h1 { font-size: clamp(41px, 11.2vw, 58px); line-height: 1.15; margin: 18px 0; } .tk-hero h1 em { display: block; }
+  .tk-hero-copy { font-size: 12px; max-width: 270px; margin: auto; } .tk-search-area { margin-top: 28px; }
+  .tk-search { padding: 12px; grid-template-columns: minmax(0, 1fr) 30px minmax(0, 1fr); row-gap: 4px; }
+  .tk-search-field { padding: 10px 6px; } .tk-search-field > span { font-size: 8px; } .tk-search-field select, .tk-search-field input { font-size: 16px; }
+  .tk-swap { width: 28px; height: 28px; } .tk-swap svg { width: 14px; } .tk-date-field { grid-column: 1 / -1; padding-top: 15px; margin-top: 8px; }
+  .tk-search .tk-button { grid-column: 1 / -1; margin-top: 7px; width: 100%; padding: 16px; }
+  .tk-search-caption { text-align: center; display: block; font-size: 9px; } .tk-search-caption span { display: none; }
+  .tk-hero-footnote { font-size: 9px; line-height: 1.8; max-width: 250px; margin: 23px auto 0; } .tk-hero-footnote .tk-status-dot { flex-shrink: 0; }
+  .tk-how { grid-template-columns: 1fr; gap: 25px; padding-block: 32px; } .tk-how h2 br { display: none; } .tk-how h2 { font-size: 23px; }
+  .tk-how-item, .tk-how-item:nth-child(3) { border: 0; padding: 0; } .tk-how h3 { margin-top: 8px; } .tk-how-item p { font-size: 11px; }
+  .tk-section { padding-block: 40px; } .tk-section-heading { flex-direction: column; gap: 16px; margin-bottom: 22px; } .tk-section-heading h2 { font-size: 28px; }
+  .tk-explore-compact { grid-template-columns: 1fr; gap: 12px; } .tk-explore-compact p { font-size: 10px; } .tk-explore-compact p br { display: none; }
+  .tk-explore-controls input, .tk-explore-controls select { font-size: 16px; } .tk-explore-controls label > span { font-size: 10px; }
+  .tk-explore-controls:not(.tk-explore-compact) .tk-explore-query { grid-column: 1 / -1; }
+  .tk-route-grid { grid-template-columns: 1fr; } .tk-route-card { padding: 24px; border-right: 0; } .tk-route-card .tk-route-name { font-size: 16px; }
+  .tk-route-card-bottom { margin-top: 16px; } .tk-route-card-bottom > strong { font-size: 29px; }
+  .tk-coverage { padding: 28px 0 36px; gap: 22px; } .tk-coverage > p:first-child { flex-basis: 100%; } .tk-coverage dl { gap: 16px; justify-content: space-between; flex-basis: 100%; } .tk-coverage dt { max-width: 85px; font-size: 9px; line-height: 1.5; }
+  .tk-engine-inner { grid-template-columns: 1fr; padding-block: 42px; gap: 24px; } .tk-engine h2 { font-size: 36px; } .tk-engine-index > p { margin-top: 16px !important; }
+  .tk-footer { flex-wrap: wrap; padding-block: 28px; gap: 16px; } .tk-footer > span { margin-left: 0; flex-basis: 100%; } .tk-footer p { margin-left: auto; font-size: 9px; }
+  .tk-result-page { padding-top: 18px; } .tk-result-toolbar { padding-bottom: 16px; } .tk-result-toolbar :is(a, button) { font-size: 10px; }
+  .tk-result-top { padding-top: 30px; } .tk-fare-card h1 { font-size: 25px; } .tk-trip-meta { font-size: 10px; } .tk-trip-meta span { padding-inline: 4px; }
+  .tk-big-fare { font-size: 64px; } .tk-price-block { margin-top: 27px; } .tk-evidence { font-size: 12px; } .tk-price-context { padding: 24px; }
+  .tk-price-context dd { font-size: 15px; } .tk-data-credit { font-size: 9px; line-height: 1.9; } .tk-data-credit span { padding-inline: 5px; }
+  .tk-window-position { max-width: none; } .tk-chart-surface { padding: 18px 8px 0; } .tk-chart-meta { padding-inline: 8px; font-size: 9px; }
+  .tk-lead-chart { height: 220px; } .tk-window-values > div { padding: 16px 2px; gap: 7px; } .tk-window-values span { font-size: 9px; }
+  .tk-window-values strong { font-size: 10px; } .tk-window-values small { font-size: 8px; line-height: 1.6; } .tk-window-values { margin-inline: -2px; }
+  .tk-lead-section { padding-bottom: 20px; } .tk-history summary { font-size: 11px; } .tk-history summary > span { font-size: 9px; }
+  .tk-flight-card { gap: 18px 14px; grid-template-columns: 1fr 1fr; padding-block: 24px; }
+  .tk-airline { grid-column: 1 / -1; } .tk-flight-times { grid-column: 1 / -1; max-width: 250px; margin-left: 52px; }
+  .tk-flight-duration { padding-left: 0; } .tk-flight-price { flex-direction: column; gap: 4px; align-items: flex-end; } .tk-flight-price strong { font-size: 25px; }
+  .tk-flight-times strong { font-size: 20px; } .tk-sort select { font-size: 16px; } .tk-state { padding: 34px 20px; } .tk-state h3 { font-size: 17px; }
+  .tk-trends-page { padding-block: 48px; } .tk-trends-page h1 { font-size: 42px; } .tk-trends-page > p:not(.tk-kicker) { font-size: 12px; } .tk-desktop-break { display: none; }
+  .tk-search-progress { min-height: 360px; padding: 80px 8px; } .tk-search-progress h1 { font-size: 22px; } .tk-pagination { font-size: 10px; } .tk-pagination > div { gap: 4px; }
+}
+@media (prefers-reduced-motion: reduce) { .tickety *, .tickety *::before, .tickety *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; } }
+
+/* Shared restrained identity for the preserved analyst workspace. */
+.vayusetu-workspace { background: #f6f8f3; }
+.vayusetu-workspace .intel-card { border-radius: 8px; box-shadow: none; }
+.vayusetu-workspace .intel-card:hover { box-shadow: none; }

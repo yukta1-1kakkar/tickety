@@ -13,16 +13,17 @@ interface NavigationItem {
 }
 
 const NAVIGATION: NavigationItem[] = [
-  { to: '/', label: 'Dashboard', permission: 'dashboard' },
-  { to: '/index', label: 'APIx', permission: 'airfare-index' },
-  { to: '/cpi', label: 'CPI', permission: 'price-trends' },
-  { to: '/routes', label: 'Route Comparison', permission: 'route-comparison' },
-  { to: '/lead-time-elasticity', label: 'Lead-Time Elasticity', permission: 'lead-time-elasticity' },
-  { to: '/api-explorer', label: 'API Access', permission: 'api-explorer' },
-  { to: '/scraper-control', label: 'Scraper Control Panel', permission: 'scraping-scheduler' },
-  { to: '/user-management', label: 'User Management', permission: 'user-management' },
-  { to: '/route-basket', label: 'Route Basket & Weights', permission: 'route-basket' },
-  { to: '/downloads', label: 'Downloads', permission: 'downloads' },
+  { to: '/vayusetu', label: 'Overview', permission: 'dashboard' },
+  { to: '/vayusetu/index', label: 'Airfare Index', permission: 'airfare-index' },
+  { to: '/vayusetu/routes', label: 'Routes', permission: 'route-comparison' },
+  { to: '/vayusetu/heatmap', label: 'Heatmap', permission: 'dashboard' },
+  { to: '/vayusetu/lead-time-elasticity', label: 'Lead Time', permission: 'lead-time-elasticity' },
+  { to: '/vayusetu/api-explorer', label: 'Data', permission: 'api-explorer' },
+  { to: '/vayusetu/cpi', label: 'CPI Comparison', permission: 'price-trends' },
+  { to: '/vayusetu/scraper-control', label: 'Scraper Control Panel', permission: 'scraping-scheduler' },
+  { to: '/vayusetu/user-management', label: 'User Management', permission: 'user-management' },
+  { to: '/vayusetu/route-basket', label: 'Route Basket & Weights', permission: 'route-basket' },
+  { to: '/vayusetu/downloads', label: 'Downloads', permission: 'downloads' },
 ];
 
 function UserSummary() {
@@ -55,18 +56,8 @@ export function Navbar() {
   const navigate = useNavigate();
   const { user, logout, hasPermission } = useAuth();
   const allowedLinks = NAVIGATION.filter((item) => hasPermission(item.permission));
-  const isRbiNavigation = user?.role === 'RBI';
-  const isNsoNavigation = user?.role === 'NSO';
-  const primaryLinks = isRbiNavigation
-    ? allowedLinks
-    : isNsoNavigation
-      ? allowedLinks
-    : allowedLinks.slice(0, 4).filter((link) => link.to !== '/lead-time-elasticity');
-  const overflowLinks = isRbiNavigation
-    ? []
-    : isNsoNavigation
-      ? []
-    : allowedLinks.filter((link, index) => index >= 4 || link.to === '/lead-time-elasticity');
+  const primaryLinks = allowedLinks.filter(link => NAVIGATION.indexOf(link) < 6);
+  const overflowLinks = allowedLinks.filter(link => NAVIGATION.indexOf(link) >= 6);
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 15);
@@ -84,12 +75,12 @@ export function Navbar() {
 
   return (
     <header className={`fixed inset-x-0 top-0 z-50 border-b border-[#E2E8F0] transition-all duration-200 ${isScrolled ? 'bg-white/95 py-2.5 shadow-sm backdrop-blur-md' : 'bg-white py-3.5'}`}>
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
-        <Link to="/" className="shrink-0 select-none"><VayuSetuLogo variant="compact" size="md" /></Link>
+      <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
+        <Link to="/vayusetu" className="shrink-0 select-none"><VayuSetuLogo variant="compact" size="md" /></Link>
 
-        <nav className="hidden min-w-0 items-center gap-1 lg:flex">
+        <nav className="order-3 hidden w-full min-w-0 items-center gap-1 border-t border-[#E2E8F0] pt-2 lg:flex" aria-label="VayuSetu navigation">
           {primaryLinks.map((link) => (
-            <NavLink key={link.to} to={link.to} end={link.to === '/'} className={navClass}>{link.label}</NavLink>
+            <NavLink key={link.to} to={link.to} end={link.to === '/vayusetu'} className={navClass}>{link.label}</NavLink>
           ))}
           {overflowLinks.length > 0 && (
             <div className="relative">
@@ -106,7 +97,8 @@ export function Navbar() {
         </nav>
 
         <div className="flex shrink-0 items-center gap-2">
-          <NavLink to="/user-guide" className={({ isActive }) => `hidden items-center gap-1.5 rounded-xl border px-3 py-2 text-xs font-bold transition md:flex ${isActive ? 'border-[#1769AA] bg-[#1769AA] text-white' : 'border-[#E2E8F0] bg-white text-[#475569] hover:border-blue-200 hover:bg-blue-50 hover:text-[#1769AA]'}`} aria-label="Open User Guide">
+          <Link to="/" className="rounded-md border border-[#B8DCD5] bg-[#EFF9F5] px-3 py-2 text-xs font-bold text-[#0F766E] hover:bg-[#E6F5F1]">Back to Tickety</Link>
+          <NavLink to="/vayusetu/user-guide" className={({ isActive }) => `hidden items-center gap-1.5 rounded-xl border px-3 py-2 text-xs font-bold transition md:flex ${isActive ? 'border-[#1769AA] bg-[#1769AA] text-white' : 'border-[#E2E8F0] bg-white text-[#475569] hover:border-blue-200 hover:bg-blue-50 hover:text-[#1769AA]'}`} aria-label="Open User Guide">
             <BookOpen className="h-3.5 w-3.5" /> Help
           </NavLink>
           <div className="relative hidden lg:block">
@@ -134,8 +126,8 @@ export function Navbar() {
           <div className="mx-auto max-w-7xl">
             <div className="mb-3 rounded-2xl border border-[#E2E8F0] bg-[#F8FAFC] p-3"><UserSummary /></div>
             <div className="grid gap-1 sm:grid-cols-2">
-              {allowedLinks.map((link) => <NavLink key={link.to} to={link.to} end={link.to === '/'} className={navClass}>{link.label}</NavLink>)}
-              <NavLink to="/user-guide" className={navClass}><span className="inline-flex items-center gap-2"><BookOpen className="h-3.5 w-3.5" /> User Guide</span></NavLink>
+              {allowedLinks.map((link) => <NavLink key={link.to} to={link.to} end={link.to === '/vayusetu'} className={navClass}>{link.label}</NavLink>)}
+              <NavLink to="/vayusetu/user-guide" className={navClass}><span className="inline-flex items-center gap-2"><BookOpen className="h-3.5 w-3.5" /> User Guide</span></NavLink>
             </div>
             <button onClick={handleLogout} className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl border border-red-200 bg-red-50 px-3 py-2.5 text-xs font-bold text-[#DC2626]"><LogOut className="h-4 w-4" /> Logout</button>
           </div>

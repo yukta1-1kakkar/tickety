@@ -8,7 +8,7 @@ import { IndiaMap } from '../components/india-map/IndiaMap';
 import { FLIGHT_ROUTES } from '../mock/airfareData';
 import { formatINR, formatDelta } from '../utils/geo';
 import { RouteIntelligenceModal } from '../components/command-center/RouteIntelligenceModal';
-import { TrendingUp, AlertTriangle, ArrowRight, Activity } from 'lucide-react';
+import { AlertTriangle, ArrowRight, Activity } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useLiveDataRevision } from '../components/LiveDataGate';
 
@@ -28,7 +28,7 @@ export const DashboardPage: React.FC = () => {
         <div>
           <div className="flex items-center gap-2 text-xs font-bold text-[#1769AA] uppercase tracking-wider mb-1">
             <span className="w-2 h-2 rounded-full bg-[#1769AA]" />
-            <span>SOVEREIGN INTELLIGENCE DASHBOARD</span>
+            <span>VAYUSETU INTELLIGENCE · GOVERNMENT DASHBOARD</span>
           </div>
           <h1 className="text-3xl sm:text-4xl font-extrabold font-heading text-[#172033] tracking-tight">
             National Aviation Fare Intelligence Console
@@ -40,14 +40,14 @@ export const DashboardPage: React.FC = () => {
 
         <div className="flex items-center gap-3">
           <Link
-            to="/cpi"
+            to="/vayusetu/cpi"
             className="px-4 py-2 rounded-xl bg-white border border-[#CBD5E1] hover:border-[#1769AA] text-xs font-bold text-[#172033] flex items-center gap-1.5 transition-all shadow-xs"
           >
             <span>CPI Benchmark</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </Link>
           <Link
-            to="/index"
+            to="/vayusetu/index"
             className="px-4 py-2 rounded-xl bg-[#1769AA] hover:bg-[#12558A] text-xs font-bold text-white flex items-center gap-1.5 transition-all shadow-xs"
           >
             <span>APIx Deep Dive</span>
@@ -89,10 +89,10 @@ export const DashboardPage: React.FC = () => {
               </p>
             </div>
             <Link
-              to="/routes"
+              to="/vayusetu/routes"
               className="text-xs font-bold text-[#1769AA] hover:text-[#12558A] flex items-center gap-1 cursor-pointer"
             >
-              <span>View all 24 routes</span>
+              <span>View all routes</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
@@ -199,7 +199,7 @@ export const DashboardPage: React.FC = () => {
 
           <div className="p-3.5 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] text-xs text-[#64748B] leading-relaxed">
             <span className="font-bold text-[#172033]">Algorithmic Scrubbing: </span>
-            Anomalies compare the latest mean fare with the persisted reference baseline across the five booking windows: T+1, T+7, T+15, T+30 and T+45.
+            Anomalies compare the latest mean fare with the persisted reference baseline across the five booking windows: T+1, T+7, T+15, T+30 and T+60 (with historical T+45 observations retained).
           </div>
         </div>
       </div>

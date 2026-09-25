@@ -192,23 +192,24 @@ def build_live_dashboard(db: Session) -> dict:
             grouped[row.advance_purchase_days].append(float(row.fare))
             cohorts[(row.route_id, row.airline)][row.advance_purchase_days].append(float(row.fare))
 
-        # Compare each route/carrier with its own T+45 fare before aggregation.
+        # Prefer the SerpAPI T+60 window while retaining historical T+45 baskets.
         # This removes route-mix/airline-mix bias (Simpson's paradox) from the
         # national curve while preserving the direction present in real data.
-        required_windows = {1, 7, 15, 30, 45}
+        anchor_days = 60 if 60 in grouped or 45 not in grouped else 45
+        required_windows = {1, 7, 15, 30, anchor_days}
         comparable = {key: windows for key, windows in cohorts.items() if required_windows.issubset(windows)}
         if comparable:
             base_values = []
             base_weights = []
             for (cohort_route, _), windows in comparable.items():
-                base_values.append(mean(windows[45]))
+                base_values.append(mean(windows[anchor_days]))
                 base_weights.append(weight_by_route[cohort_route].weight if route_key == "ALL" else 1.0)
             base_weight_sum = sum(base_weights)
             comparable_anchor = sum(value * weight for value, weight in zip(base_values, base_weights)) / base_weight_sum
         else:
             comparable_anchor = 0
         points = []
-        for days in (45, 30, 15, 7, 1):
+        for days in (anchor_days, 30, 15, 7, 1):
             fares = grouped.get(days, [])
             if not fares:
                 continue
@@ -217,7 +218,7 @@ def build_live_dashboard(db: Session) -> dict:
             for (cohort_route, _), windows in comparable.items():
                 if not windows.get(days):
                     continue
-                cohort_base = mean(windows[45])
+                cohort_base = mean(windows[anchor_days])
                 ratios.append(mean(windows[days]) / cohort_base)
                 ratio_weights.append(weight_by_route[cohort_route].weight if route_key == "ALL" else 1.0)
             if ratios:

@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react';
-import { Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, LockKeyhole, Mail, ShieldCheck } from 'lucide-react';
 import { VayuSetuLogo } from '../components/common/VayuSetuLogo';
 import { useAuth } from '../context/AuthContext';
@@ -18,7 +18,7 @@ export function Login() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  if (isAuthenticated) return <Navigate to="/" replace />;
+  if (isAuthenticated) return <Navigate to="/vayusetu" replace />;
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -44,7 +44,7 @@ export function Login() {
     }
 
     const state = location.state as LoginLocationState | null;
-    navigate(state?.from?.pathname || '/', { replace: true });
+    navigate(state?.from?.pathname || '/vayusetu', { replace: true });
   };
 
   return (
@@ -148,6 +148,7 @@ export function Login() {
             <p className="mt-7 border-t border-[#E2E8F0] pt-5 text-center text-[11px] leading-5 text-[#64748B]">
               Access is restricted to authorized officials from MoSPI, NSO and RBI.
             </p>
+            <Link to="/tickety" className="mt-4 block text-center text-sm font-bold text-[#1769AA]">Travelling? Check a fare with Tickety →</Link>
           </section>
         </div>
       </main>

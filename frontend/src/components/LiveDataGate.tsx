@@ -2,7 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useRef, useState, ty
 import { AlertTriangle, Database, LoaderCircle, RefreshCw } from 'lucide-react';
 import { applyLiveDashboard, type LiveDashboardPayload } from '../mock/airfareData';
 
-const API_BASE = (import.meta.env.VITE_API_URL || 'https://vayusetu.onrender.com/api').replace(/\/$/, '');
+import { API_BASE } from '../apiConfig';
 const REFRESH_INTERVAL_MS = 60 * 1000;
 // Render cold starts and the first uncached aggregation can exceed 30 seconds.
 // Subsequent responses are served by the API's shared 60-second snapshot cache.

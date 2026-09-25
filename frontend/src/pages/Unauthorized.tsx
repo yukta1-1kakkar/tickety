@@ -12,7 +12,7 @@ export function Unauthorized() {
         <h1 className="mt-2 font-heading text-3xl font-extrabold text-[#172033]">403 - Unauthorized Access</h1>
         <p className="mt-4 text-sm leading-6 text-[#64748B]">You do not have permission to access this module.</p>
         <Link
-          to="/"
+          to="/vayusetu"
           className="mt-8 inline-flex items-center gap-2 rounded-xl bg-[#1769AA] px-5 py-3 text-sm font-bold text-white transition hover:bg-[#12558A]"
         >
           <ArrowLeft className="h-4 w-4" /> Return to Dashboard
