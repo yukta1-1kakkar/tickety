@@ -8,6 +8,7 @@ import type {
   LiveTelemetryEvent, PriceTrendPoint, RouteWeight, SectorHeatmapItem,
 } from '../types';
 import { applyLiveMapData } from '../components/india-map/mapData';
+import routeConfig from '../../../config/routes.json';
 
 export interface DataQuality {
   overallConfidence: number;
@@ -85,24 +86,43 @@ export let DATA_QUALITY: DataQuality = {
 export let DATA_SOURCES: DataSource[] = [];
 
 let leadTimeByRoute: Record<string, LeadTimeDataPoint[]> = {};
+const configuredRouteIds = new Set(routeConfig.routes.flatMap(route => [route.routeId, route.displayId]));
+const configuredDisplayIds = new Set(routeConfig.routes.flatMap(route =>
+  route.originAirport.split(',').flatMap(origin =>
+    route.destinationAirport.split(',').map(destination => `${origin}-${destination}`),
+  ),
+));
 
 export const getLeadTimeCurveForRoute = (routeId: string): LeadTimeDataPoint[] =>
   leadTimeByRoute[routeId] ?? leadTimeByRoute.ALL ?? [];
 
 export function applyLiveDashboard(payload: LiveDashboardPayload): void {
+  const flightRoutes = payload.flightRoutes.filter(route => configuredRouteIds.has(route.id));
+  const routeWeights = payload.routeWeights.filter(route => configuredRouteIds.has(route.routeId));
+  const usedAirports = new Set(flightRoutes.flatMap(route => [route.origin, route.destination]));
+  const airports = Object.fromEntries(
+    Object.entries(payload.airports).filter(([code]) => usedAirports.has(code)),
+  );
   KPAI_METRICS = payload.kpaiMetrics;
-  ROUTE_WEIGHTS_DATA = payload.routeWeights;
-  AIRPORTS = payload.airports;
-  FLIGHT_ROUTES = payload.flightRoutes;
+  ROUTE_WEIGHTS_DATA = routeWeights;
+  AIRPORTS = airports;
+  FLIGHT_ROUTES = flightRoutes;
   INDEX_TIMELINE = payload.indexTimeline;
   CPI_DATA_SERIES = Array.isArray(payload.cpiDataSeries) ? payload.cpiDataSeries : [];
   CPI_COMPARISON_META = payload.cpiComparisonMeta ?? DEFAULT_CPI_COMPARISON_META;
-  SECTOR_HEATMAP_DATA = payload.sectorHeatmapData;
-  leadTimeByRoute = payload.leadTimeByRoute;
+  SECTOR_HEATMAP_DATA = payload.sectorHeatmapData.map(sector => ({
+    ...sector,
+    keyRoutes: sector.keyRoutes.filter(route => configuredRouteIds.has(route)),
+  })).filter(sector => sector.keyRoutes.length > 0);
+  leadTimeByRoute = Object.fromEntries(Object.entries(payload.leadTimeByRoute).filter(
+    ([route]) => route === 'ALL' || configuredRouteIds.has(route),
+  ));
   LEAD_TIME_ELASTICITY_DATA = payload.leadTimeByRoute.ALL ?? [];
   PRICE_TREND_SERIES = payload.priceTrendSeries;
-  LIVE_TELEMETRY_FEED = payload.liveTelemetryFeed;
+  LIVE_TELEMETRY_FEED = payload.liveTelemetryFeed.filter(
+    event => configuredDisplayIds.has(`${event.origin}-${event.dest}`),
+  );
   DATA_QUALITY = payload.dataQuality;
   DATA_SOURCES = payload.dataSources;
-  applyLiveMapData(payload.airports, payload.flightRoutes, payload.routeWeights, payload.indexTimeline.at(-1)?.indexValue ?? 0);
+  applyLiveMapData(airports, flightRoutes, routeWeights, payload.indexTimeline.at(-1)?.indexValue ?? 0);
 }

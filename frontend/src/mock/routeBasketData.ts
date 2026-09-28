@@ -1,4 +1,5 @@
 import type { RouteBasketItem } from '../types';
+import routeConfig from '../../../config/routes.json';
 
 export interface BasketAirport {
   code: string;
@@ -26,41 +27,17 @@ export const BASKET_AIRPORTS: readonly BasketAirport[] = [
 
 const UPDATED_DATE = '27 Aug 2026';
 
-// Top 24 city pairs from backend/data/processed/route_weights.csv, normalized
-// against their combined passenger volume so the APIx basket totals 100%.
-export const INITIAL_ROUTE_BASKET: RouteBasketItem[] = [
-  ['DEL-BOM', 'DEL', 'BOM', 'Delhi', 'Mumbai', 11.43],
-  ['BLR-DEL', 'BLR', 'DEL', 'Bengaluru', 'Delhi', 8.19],
-  ['BLR-BOM', 'BLR', 'BOM', 'Bengaluru', 'Mumbai', 7.02],
-  ['DEL-HYD', 'DEL', 'HYD', 'Delhi', 'Hyderabad', 5.28],
-  ['DEL-CCU', 'DEL', 'CCU', 'Delhi', 'Kolkata', 5.05],
-  ['DEL-PNQ', 'DEL', 'PNQ', 'Delhi', 'Pune', 4.83],
-  ['GOI-BOM', 'GOI', 'BOM', 'Goa', 'Mumbai', 4.24],
-  ['AMD-DEL', 'AMD', 'DEL', 'Ahmedabad', 'Delhi', 3.98],
-  ['DEL-GOI', 'DEL', 'GOI', 'Delhi', 'Goa', 3.83],
-  ['MAA-BOM', 'MAA', 'BOM', 'Chennai', 'Mumbai', 3.72],
-  ['HYD-BOM', 'HYD', 'BOM', 'Hyderabad', 'Mumbai', 3.65],
-  ['CCU-BOM', 'CCU', 'BOM', 'Kolkata', 'Mumbai', 3.64],
-  ['MAA-DEL', 'MAA', 'DEL', 'Chennai', 'Delhi', 3.62],
-  ['BLR-HYD', 'BLR', 'HYD', 'Bengaluru', 'Hyderabad', 3.45],
-  ['AMD-BOM', 'AMD', 'BOM', 'Ahmedabad', 'Mumbai', 3.45],
-  ['BLR-CCU', 'BLR', 'CCU', 'Bengaluru', 'Kolkata', 3.42],
-  ['DEL-SXR', 'DEL', 'SXR', 'Delhi', 'Srinagar', 3.24],
-  ['BLR-PNQ', 'BLR', 'PNQ', 'Bengaluru', 'Pune', 3.06],
-  ['DEL-GAU', 'DEL', 'GAU', 'Delhi', 'Guwahati', 2.66],
-  ['DEL-PAT', 'DEL', 'PAT', 'Delhi', 'Patna', 2.58],
-  ['BLR-GOI', 'BLR', 'GOI', 'Bengaluru', 'Goa', 2.48],
-  ['BLR-MAA', 'BLR', 'MAA', 'Bengaluru', 'Chennai', 2.47],
-  ['DEL-LKO', 'DEL', 'LKO', 'Delhi', 'Lucknow', 2.42],
-  ['COK-BOM', 'COK', 'BOM', 'Kochi', 'Mumbai', 2.29],
-].map(([route, originCode, destinationCode, originCity, destinationCity, weight], index) => ({
+const selectedWeight = routeConfig.routes.reduce((sum, route) => sum + route.weight, 0);
+
+// Derived from the same config/routes.json consumed by the scraper and API.
+export const INITIAL_ROUTE_BASKET: RouteBasketItem[] = routeConfig.routes.map((route, index) => ({
   id: `basket-${index + 1}`,
-  route: String(route),
-  originCode: String(originCode),
-  destinationCode: String(destinationCode),
-  originCity: String(originCity),
-  destinationCity: String(destinationCity),
-  weight: Number(weight),
+  route: route.displayId,
+  originCode: route.originAirport.split(',')[0],
+  destinationCode: route.destinationAirport.split(',')[0],
+  originCity: route.origin.charAt(0) + route.origin.slice(1).toLowerCase(),
+  destinationCity: route.destination.charAt(0) + route.destination.slice(1).toLowerCase(),
+  weight: Number((route.weight / selectedWeight * 100).toFixed(2)),
   status: 'Active',
   lastUpdated: UPDATED_DATE,
 }));

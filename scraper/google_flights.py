@@ -25,6 +25,8 @@ else:
 
 
 DEFAULT_LEAD_TIMES = (1, 7, 15, 30, 60)
+MAX_ROUTES = 24
+MAX_SEARCHES_PER_RUN = 120
 SCRAPER_DIR = Path(__file__).resolve().parent
 PROJECT_DIR = SCRAPER_DIR.parent
 DEFAULT_DATA_DIR = PROJECT_DIR / "backend" / "data"
@@ -152,10 +154,14 @@ def _lead_times(value: str) -> tuple[int, ...]:
 def main() -> None:
     load_dotenv(SCRAPER_DIR / ".env")
     load_dotenv(PROJECT_DIR / "backend" / ".env")
-    parser = argparse.ArgumentParser(description="Scrape the complete domestic route basket via SerpAPI")
-    parser.add_argument("--routes", type=Path, default=DEFAULT_ROUTE_CSV, help="route_weights CSV")
+    parser = argparse.ArgumentParser(description="Scrape the configured 24-route basket via SerpAPI")
+    parser.add_argument("--routes", type=Path, default=DEFAULT_ROUTE_CSV, help="route config JSON (or CSV override)")
     parser.add_argument("--lead-times", type=_lead_times, default=DEFAULT_LEAD_TIMES)
     parser.add_argument("--data-dir", type=Path, default=DEFAULT_DATA_DIR)
+    parser.add_argument(
+        "--start-route", type=int, default=1,
+        help="one-based CSV route number to start from when resuming a partial run",
+    )
     parser.add_argument("--max-routes", type=int, help="limit routes for a controlled smoke test")
     parser.add_argument("--dry-run", action="store_true", help="validate routes/config without API calls")
     parser.add_argument("--no-etl", action="store_true", help="save JSON without loading it into the database")
@@ -165,12 +171,30 @@ def main() -> None:
     routes, rejected = load_domestic_routes(args.routes)
     if rejected:
         LOG.warning("Rejected %s route rows; details will be shown in dry-run output", len(rejected))
+    if args.start_route < 1:
+        parser.error("--start-route must be at least 1")
+    configured_routes, configured_rejected = load_domestic_routes(DEFAULT_ROUTE_CSV)
+    configured_ids = {route.route_id for route in configured_routes}
+    outside_basket = sorted(route.route_id for route in routes if route.route_id not in configured_ids)
+    if configured_rejected or outside_basket:
+        parser.error(
+            "route input must be a subset of config/routes.json; outside basket: "
+            + ", ".join(outside_basket)
+        )
+    routes = routes[args.start_route - 1:]
     if args.max_routes is not None:
         routes = routes[:max(0, args.max_routes)]
     expected_searches = len(routes) * len(args.lead_times)
+    if len(routes) > MAX_ROUTES:
+        parser.error(f"refusing to scrape {len(routes)} routes; configured maximum is {MAX_ROUTES}")
+    if expected_searches > MAX_SEARCHES_PER_RUN:
+        parser.error(
+            f"refusing {expected_searches} searches; per-run ceiling is {MAX_SEARCHES_PER_RUN}"
+        )
     if args.dry_run:
         print(json.dumps({
             "route_file": str(args.routes.resolve()), "valid_routes": len(routes),
+            "start_route": args.start_route,
             "rejected_routes": rejected, "lead_times": list(args.lead_times),
             "expected_api_searches": expected_searches,
         }, indent=2))

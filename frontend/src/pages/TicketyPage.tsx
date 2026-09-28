@@ -2,8 +2,9 @@ import { useEffect, useState } from 'react';
 import { ArrowLeft, ArrowRight, ArrowUpRight, ChartNoAxesCombined, Layers3, Menu, Plane, X } from 'lucide-react';
 import { Link, Navigate, NavLink, Outlet, useLocation, useOutletContext, useSearchParams } from 'react-router-dom';
 import { FareCard, FlightComparison, PriceContext, SearchProgress, State } from '../components/tickety/FareComponents';
+import { FarePressureCalendar } from '../components/tickety/FarePressureCalendar';
 import { FareSearch } from '../components/tickety/FareSearch';
-import { LeadTimeChart, PriceHistory } from '../components/tickety/LeadTimeChart';
+import { LeadTimeElasticityChart, NetworkLeadTimeTrend, PriceHistory } from '../components/tickety/LeadTimeChart';
 import { RouteExplorer } from '../components/tickety/RouteExplorer';
 import { dateLabel, routeLabel, timestampLabel, useApi, useRouteCatalog, validDate, type Catalog, type Coverage, type Intelligence, type Resource } from '../components/tickety/data';
 import './TicketyPage.css';
@@ -60,8 +61,7 @@ export function TicketyExplore() {
 }
 
 export function TicketyTrends() {
-  const { catalog } = useOutletContext<TicketyContext>();
-  return <div className="tk-container tk-trends-page"><p className="tk-kicker">The timing behind your fare</p><h1>Every price has<br /><em>a little history.</em></h1><p>Choose a route and departure date to explore its observed fares<br className="tk-desktop-break" /> at 60, 30, 15, 7 and 1 day before departure.</p><FareSearch catalog={catalog} trends /><div className="tk-trend-explainer"><span>60</span><i /><span>30</span><i /><span>15</span><i /><span>7</span><i /><span>1</span></div><p className="tk-fine-print">Days before departure. Only collected observations appear in your chart.</p></div>;
+  return <div className="tk-container tk-trends-page"><NetworkLeadTimeTrend /><LeadTimeElasticityChart /></div>;
 }
 
 function FareResult({ route, date }: { route: string; date: string }) {
@@ -76,7 +76,7 @@ function FareResult({ route, date }: { route: string; date: string }) {
     {edit && <FareSearch catalog={catalog} initialRoute={route} initialDate={date} />}
     {resource.loading ? <SearchProgress /> : resource.error ? <State error title="We couldn’t build your fare picture." detail="Your route and date are saved. Try again to retrieve the latest observations." retry={resource.retry} />
       : resource.data?.current ? <><div className="tk-result-top"><FareCard fare={resource.data.current} /><PriceContext fare={resource.data.current} /></div><p className="tk-data-credit">Google Flights via SerpAPI <span>·</span> Price intelligence by VayuSetu</p>
-        <LeadTimeChart points={resource.data.leadTime} departureDate={date} observedWindow={resource.data.current.advance_purchase_days} />
+        <FarePressureCalendar departureDate={date} routeId={route} />
         <PriceHistory points={resource.data.history} /><FlightComparison flights={resource.data.flights ?? []} />
       </> : <State title="No airfare observations yet." detail={`No stored fares for ${routeLabel(route)} on ${dateLabel(date)}. Try a different route or departure date.`}><button className="tk-text-button" onClick={() => setEdit(true)}>Change search <ArrowRight size={16} /></button></State>}
     {!resource.loading && <RouteExplorer catalog={catalog} initialDate={date} compact />}

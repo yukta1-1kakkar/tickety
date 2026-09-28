@@ -125,29 +125,31 @@
 .tk-result-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 20px; padding-bottom: 30px; border-bottom: 1px solid var(--tk-line); }
 .tk-result-toolbar :is(a, button) { display: flex; align-items: center; gap: 8px; font-size: 11px; min-height: 32px; color: var(--tk-muted); }
 .tk-result-page > .tk-state { margin-block: 42px; }
-.tk-result-top { display: grid; grid-template-columns: 1.25fr 1fr; gap: 80px; padding: 48px 0 26px; align-items: start; animation: tk-enter .18s ease-out; }
-.tk-fare-card h1 { font-size: 30px; font-weight: 600; line-height: 1.4; margin-top: 12px; letter-spacing: -.04em; }
+.tk-result-top { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(320px, .85fr); gap: 26px; padding: 28px 0 20px; align-items: stretch; animation: tk-enter .18s ease-out; }
+.tk-fare-card { min-width: 0; padding: 24px 28px; border: 1px solid var(--tk-line); border-radius: 6px; background: #fcfdf9; }
+.tk-fare-card h1 { font-size: 25px; font-weight: 600; line-height: 1.35; margin-top: 7px; letter-spacing: -.04em; }
 .tk-trip-meta { font-size: 11px; color: var(--tk-muted); margin-top: 9px; line-height: 1.8; }
 .tk-trip-meta span { padding-inline: 8px; }
-.tk-price-block { margin-top: 32px; }
+.tk-price-block { display: flex; align-items: center; flex-wrap: wrap; gap: 10px 14px; margin-top: 19px; }
 .tk-label { font-size: 10px; color: var(--tk-muted); text-transform: uppercase; letter-spacing: .1em; }
-.tk-big-fare { font: 600 clamp(56px, 6vw, 78px)/1.15 'Manrope', sans-serif; letter-spacing: -.07em; margin: 8px 0 12px; }
+.tk-price-block .tk-label { flex-basis: 100%; }
+.tk-big-fare { font: 600 clamp(40px, 4vw, 52px)/1.05 'Manrope', sans-serif; letter-spacing: -.065em; margin: 0; }
 .tk-price-block .tk-level { padding: 6px 10px; background: var(--tk-wash); border-radius: 3px; font-size: 11px; }
-.tk-fare-caption { color: var(--tk-muted); font-size: 10px; margin-top: 16px; line-height: 1.8; }
-.tk-evidence { display: flex; align-items: flex-start; gap: 10px; margin-top: 25px; color: var(--tk-green); font-size: 13px; line-height: 1.7; }
-.tk-source-note { color: var(--tk-muted); font-size: 10px; line-height: 1.8; margin-top: 14px; max-width: 400px; }
-.tk-price-context { border: 1px solid #d9e2d2; background: #eff3e9; border-radius: 6px; padding: 32px; }
+.tk-fare-caption { flex-basis: 100%; color: var(--tk-muted); font-size: 10px; margin-top: 0; line-height: 1.7; }
+.tk-evidence { display: flex; align-items: flex-start; gap: 10px; margin-top: 14px; color: var(--tk-green); font-size: 12px; line-height: 1.6; }
+.tk-source-note { color: var(--tk-muted); font-size: 10px; line-height: 1.7; margin-top: 7px; max-width: 520px; }
+.tk-price-context { border: 1px solid #d9e2d2; background: #eff3e9; border-radius: 6px; padding: 23px 26px; }
 .tk-context-title { display: flex; align-items: center; gap: 10px; }
-.tk-context-title h2 { font-size: 17px; font-weight: 600; }
-.tk-price-context > p { color: var(--tk-muted); font-size: 11px; line-height: 1.8; margin-top: 10px; }
-.tk-price-context dl { margin-top: 30px; }
-.tk-price-context dl > div { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 16px 0; border-bottom: 1px solid #d7dfd0; }
+.tk-context-title h2 { font-size: 16px; font-weight: 600; }
+.tk-price-context > p { color: var(--tk-muted); font-size: 10px; line-height: 1.7; margin-top: 7px; }
+.tk-price-context dl { margin-top: 15px; }
+.tk-price-context dl > div { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 9px 0; border-bottom: 1px solid #d7dfd0; }
 .tk-price-context dt { font-size: 11px; color: var(--tk-muted); }
-.tk-price-context dd { font-size: 17px; font-weight: 600; letter-spacing: -.03em; }
-.tk-price-context .tk-context-reading { margin-top: 25px; color: var(--tk-ink); }
+.tk-price-context dd { font-size: 15px; font-weight: 600; letter-spacing: -.03em; }
+.tk-price-context .tk-context-reading { margin-top: 13px; color: var(--tk-ink); }
 .tk-context-reading strong { text-transform: capitalize; }
 .tk-price-context .tk-fine-print { font-size: 10px; margin-top: 12px; }
-.tk-data-credit { padding-bottom: 26px; border-bottom: 1px solid var(--tk-line); font-size: 10px; color: var(--tk-muted); }
+.tk-data-credit { padding-bottom: 18px; border-bottom: 1px solid var(--tk-line); font-size: 10px; color: var(--tk-muted); }
 .tk-data-credit span { padding-inline: 10px; }
 .tk-window-position { background: #eaf0e3; border-left: 2px solid #4e7658; padding: 12px 18px; flex-shrink: 0; }
 .tk-window-position span { display: block; font-size: 9px; text-transform: uppercase; letter-spacing: .1em; color: var(--tk-muted); }
@@ -191,19 +193,99 @@
 .tk-search-progress p { color: var(--tk-muted); font-size: 12px; margin-top: 14px; }
 .tk-progress-line { position: relative; margin: auto; width: min(240px, 75%); border-top: 1px dashed #91a58e; }
 .tk-progress-line svg { position: absolute; top: -11px; color: var(--tk-green); background: var(--tk-paper); animation: tk-flight 2.5s ease-in-out infinite; }
-.tk-trends-page { padding-block: 80px; text-align: center; }
+.tk-trends-page { padding-block: 24px 64px; text-align: left; }
 .tk-trends-page h1 { font-size: clamp(40px, 5vw, 64px); letter-spacing: -.055em; line-height: 1.2; margin-top: 20px; font-weight: 600; }
 .tk-trends-page > p:not(.tk-kicker) { font-size: 13px; color: var(--tk-muted); line-height: 1.9; margin-top: 24px; }
 .tk-trend-explainer { display: flex; align-items: center; gap: 14px; width: min(500px, 100%); margin: 60px auto 0; }
 .tk-trend-explainer span { font: 12px 'JetBrains Mono', monospace; }
 .tk-trend-explainer i { flex: 1; border-top: 1px dashed #a5b6a0; }
+.tk-network-trend { margin-top: 54px; text-align: left; }
+.tk-network-trend .tk-section-heading > div:first-child { max-width: 640px; }
+.tk-network-trend .tk-route-loading { min-height: 320px; }
+.tk-heat-legend { display: flex; align-items: center; flex-wrap: wrap; gap: 12px 24px; padding: 14px 18px; margin-bottom: 22px; border: 1px solid #d8e1e8; border-radius: 18px; background: #f5f8fa; font-size: 10px; color: #223247; }
+.tk-heat-legend strong { margin-right: 4px; font-weight: 650; }
+.tk-heat-legend span { display: inline-flex; align-items: center; gap: 7px; font-weight: 650; white-space: nowrap; }
+.tk-heat-legend small { color: #6d7d8c; font-weight: 400; }
+.tk-heat-legend i { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+.tk-heatmap-scroll { max-height: 660px; overflow: auto; border: 1px solid #d7e0e7; border-radius: 9px; background: #f6f8fa; scrollbar-color: #c6d1db transparent; }
+.tk-heatmap { width: 100%; min-width: 980px; border-collapse: separate; border-spacing: 0; table-layout: fixed; }
+.tk-heatmap th, .tk-heatmap td { border-right: 1px solid #dce4ea; border-bottom: 1px solid #dce4ea; }
+.tk-heatmap tr > :last-child { border-right: 0; }
+.tk-heatmap thead th { position: sticky; top: 0; z-index: 2; height: 72px; padding: 10px; background: #113047; color: white; text-align: center; font: 700 16px/1.25 'Manrope', sans-serif; }
+.tk-heatmap thead th:first-child { width: 250px; padding-left: 16px; text-align: left; }
+.tk-heatmap thead span { display: block; margin-bottom: 5px; color: #a8c9d8; font: 650 9px/1.2 'Inter', sans-serif; text-transform: uppercase; letter-spacing: .11em; }
+.tk-heatmap thead th:not(:first-child) span { margin: 6px 0 0; letter-spacing: .03em; }
+.tk-heatmap tbody th { padding: 12px 16px; background: #f7f9fb; text-align: left; }
+.tk-heatmap tbody th div { display: flex; flex-direction: column; gap: 5px; }
+.tk-heatmap tbody th strong { font: 700 13px/1.2 'Manrope', sans-serif; color: #223047; }
+.tk-heatmap tbody th small { color: #8a9aae; font-size: 8px; text-transform: uppercase; letter-spacing: .05em; }
+.tk-heatmap td { padding: 6px; background: #fff; }
+.tk-heat-cell { min-height: 58px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; border-radius: 10px; color: white; text-align: center; }
+.tk-heat-cell strong { font: 700 13px/1.1 'Manrope', sans-serif; }
+.tk-heat-cell span { font: 650 9px/1.2 'JetBrains Mono', monospace; }
+.tk-heat-discount { background: #08ae82; }
+.tk-heat-baseline { background: #079bea; }
+.tk-heat-elevated { background: #ffb608; color: #2b2306; }
+.tk-heat-premium { background: #fa1749; }
+.tk-heat-empty { background: #edf1f3; color: #7f8b93; }
+.tk-elasticity-surface { overflow: hidden; }
+.tk-trends-page .tk-network-trend { margin-top: 0; }
+.tk-elasticity-chart-section { text-align: left; border-top: 1px solid var(--tk-line); }
+.tk-elasticity-chart-section .tk-section-heading { margin-bottom: 20px; }
+.tk-elasticity-chart { height: 360px; }
+.tk-elasticity-legend { display: flex; justify-content: center; gap: 24px; margin: 8px 0 4px; font-size: 11px; color: var(--tk-muted); }
+.tk-elasticity-legend span { display: inline-flex; align-items: center; gap: 7px; }
+.tk-elasticity-legend i { display: inline-block; width: 11px; height: 11px; border-radius: 50%; }
+.tk-legend-fare { background: #1aa64b; }
+.tk-legend-yield { background: #078b96; }
+.tk-result-page .tk-elasticity-chart-section { padding-top: 42px; }
+.tk-window-labels-only > div { padding-block: 22px; }
+.tk-window-labels-only span { color: var(--tk-ink); font: 12px 'JetBrains Mono', monospace; }
+.tk-demand-calendar-section { padding-top: 42px; }
+.tk-demand-calendar-layout { display: grid; grid-template-columns: minmax(0, 1.65fr) minmax(280px, .75fr); gap: 22px; align-items: stretch; }
+.tk-demand-calendar-card, .tk-calendar-insights { border: 1px solid var(--tk-line); border-radius: 8px; background: #fcfdf9; }
+.tk-calendar-toolbar { min-height: 62px; display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 12px 16px; border-bottom: 1px solid var(--tk-line); }
+.tk-calendar-toolbar > div { display: flex; align-items: center; gap: 9px; }
+.tk-calendar-toolbar strong { font: 650 16px/1.2 'Manrope', sans-serif; }
+.tk-calendar-toolbar button { min-height: 34px; display: inline-flex; align-items: center; justify-content: center; padding: 7px 10px; border: 1px solid var(--tk-line); border-radius: 4px; background: white; color: var(--tk-ink); font-size: 9px; }
+.tk-calendar-toolbar button:first-child, .tk-calendar-toolbar button:last-child { width: 34px; padding: 0; }
+.tk-calendar-weekdays, .tk-calendar-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); }
+.tk-calendar-weekdays { border-bottom: 1px solid var(--tk-line); background: #f1f4ed; }
+.tk-calendar-weekdays span { padding: 9px 5px; color: var(--tk-muted); font-size: 9px; font-weight: 650; text-align: center; text-transform: uppercase; letter-spacing: .08em; }
+.tk-calendar-day { position: relative; min-height: 82px; padding: 9px; border-right: 1px solid var(--tk-line); border-bottom: 1px solid var(--tk-line); background: white; overflow: hidden; }
+.tk-calendar-day:nth-child(7n) { border-right: 0; }
+.tk-calendar-day:nth-last-child(-n+7) { border-bottom: 0; }
+.tk-calendar-day > span { display: inline-flex; align-items: center; justify-content: center; width: 25px; height: 25px; border-radius: 50%; font: 600 11px/1 'Inter', sans-serif; }
+.tk-calendar-day small { display: block; margin-top: 7px; color: #996220; font-size: 8px; font-weight: 650; line-height: 1.35; overflow-wrap: anywhere; }
+.tk-calendar-day b { position: absolute; right: 6px; bottom: 6px; padding: 3px 5px; border-radius: 3px; background: var(--tk-green); color: white; font-size: 7px; text-transform: uppercase; letter-spacing: .06em; }
+.tk-calendar-day.is-outside { opacity: .38; background: #f5f6f3; }
+.tk-calendar-day.is-weekend { background: #eef5f0; }
+.tk-calendar-day.is-holiday { box-shadow: inset 0 3px #e4a521; }
+.tk-calendar-day.is-selected { z-index: 1; outline: 2px solid var(--tk-green); outline-offset: -2px; background: #dfeee2; }
+.tk-calendar-day.is-selected > span { background: var(--tk-green); color: white; }
+.tk-calendar-legend { display: flex; align-items: center; flex-wrap: wrap; gap: 14px 22px; padding: 13px 16px; border-top: 1px solid var(--tk-line); color: var(--tk-muted); font-size: 9px; }
+.tk-calendar-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.tk-calendar-legend i { width: 10px; height: 10px; border-radius: 2px; border: 1px solid var(--tk-line); }
+.tk-calendar-legend .is-travel { background: var(--tk-green); border-color: var(--tk-green); }
+.tk-calendar-legend .is-festival { background: #e4a521; border-color: #e4a521; }
+.tk-calendar-legend .is-weekend { background: #d9eadf; border-color: #c3d8ca; }
+.tk-calendar-insights { padding: 24px; background: #eff3e9; }
+.tk-calendar-insights h3 { margin-top: 7px; font: 650 21px/1.3 'Manrope', sans-serif; letter-spacing: -.035em; }
+.tk-calendar-insights > div { margin-top: 20px; }
+.tk-calendar-factor { display: flex; align-items: flex-start; gap: 10px; padding: 14px 0; border-top: 1px solid #d2ddce; color: var(--tk-green); }
+.tk-calendar-factor strong { color: var(--tk-ink); font-size: 12px; }
+.tk-calendar-factor p { margin-top: 5px; color: var(--tk-muted); font-size: 10px; line-height: 1.65; }
+.tk-calendar-factor-festival { color: #b1761b; }
+.tk-calendar-factor-weekend { color: #32785f; }
+.tk-calendar-factor-nearby { color: #8d6230; }
+.tk-calendar-disclaimer { margin-top: 18px; padding-top: 16px; border-top: 1px solid #d2ddce; color: var(--tk-muted); font-size: 9px; line-height: 1.7; }
 @keyframes tk-enter { from { opacity: .4; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes tk-pulse { from { opacity: .3; } to { opacity: 1; } }
 @keyframes tk-flight { from { left: 0; } to { left: calc(100% - 20px); } }
 @media (max-width: 1100px) {
   .tk-container { width: calc(100% - 64px); } .tk-nav-inner { padding-inline: 32px; gap: 28px; } .tk-nav-links { gap: 20px; }
   .tk-intelligence-link { padding-left: 20px; } .tk-search-field { padding-inline: 12px; } .tk-search .tk-button { padding-inline: 18px; gap: 10px; }
-  .tk-how { gap: 24px; } .tk-how-item { padding-left: 20px; } .tk-result-top { gap: 38px; } .tk-price-context { padding: 25px; }
+  .tk-how { gap: 24px; } .tk-how-item { padding-left: 20px; } .tk-result-top { gap: 22px; } .tk-price-context { padding: 22px; }
   .tk-coverage { flex-wrap: wrap; gap: 24px; } .tk-coverage dl { flex: 1; justify-content: space-evenly; } .tk-engine-inner { gap: 60px; }
   .tk-route-card { padding: 20px; } .tk-route-card-bottom { flex-wrap: wrap; } .tk-flight-card { gap: 18px; }
 }
@@ -216,7 +298,8 @@
   .tk-search { grid-template-columns: 1fr 38px 1fr; row-gap: 14px; } .tk-date-field { grid-column: 1 / 3; border-left: 0; border-top: 1px solid var(--tk-line); padding-top: 14px; }
   .tk-search .tk-button { margin-top: 10px; } .tk-how { grid-template-columns: 1fr 1fr; gap: 34px; } .tk-how-item:nth-child(3) { border-left: 0; padding-left: 0; }
   .tk-route-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .tk-explore-controls { grid-template-columns: 1fr 1fr; }
-  .tk-result-top { grid-template-columns: 1fr; gap: 28px; } .tk-price-context { max-width: none; } .tk-big-fare { font-size: 70px; }
+  .tk-result-top { grid-template-columns: 1fr; gap: 18px; } .tk-price-context { max-width: none; } .tk-big-fare { font-size: 48px; }
+  .tk-demand-calendar-layout { grid-template-columns: 1fr; } .tk-calendar-insights { padding: 20px; }
   .tk-section-heading { align-items: flex-start; } .tk-section-heading h2 { font-size: 28px; } .tk-window-position { padding: 12px; max-width: 180px; }
   .tk-flight-card { grid-template-columns: 1.2fr 1fr; gap: 20px; } .tk-flight-duration { padding-left: 52px; } .tk-flight-price { flex-direction: row; justify-content: flex-end; align-items: baseline; }
   .tk-engine-inner { gap: 35px; } .tk-engine h2 { font-size: 32px; } .tk-engine-index > span { font-size: 11px; }
@@ -246,11 +329,13 @@
   .tk-engine-inner { grid-template-columns: 1fr; padding-block: 42px; gap: 24px; } .tk-engine h2 { font-size: 36px; } .tk-engine-index > p { margin-top: 16px !important; }
   .tk-footer { flex-wrap: wrap; padding-block: 28px; gap: 16px; } .tk-footer > span { margin-left: 0; flex-basis: 100%; } .tk-footer p { margin-left: auto; font-size: 9px; }
   .tk-result-page { padding-top: 18px; } .tk-result-toolbar { padding-bottom: 16px; } .tk-result-toolbar :is(a, button) { font-size: 10px; }
-  .tk-result-top { padding-top: 30px; } .tk-fare-card h1 { font-size: 25px; } .tk-trip-meta { font-size: 10px; } .tk-trip-meta span { padding-inline: 4px; }
-  .tk-big-fare { font-size: 64px; } .tk-price-block { margin-top: 27px; } .tk-evidence { font-size: 12px; } .tk-price-context { padding: 24px; }
+  .tk-result-top { padding-top: 20px; } .tk-fare-card { padding: 20px; } .tk-fare-card h1 { font-size: 23px; } .tk-trip-meta { font-size: 10px; } .tk-trip-meta span { padding-inline: 4px; }
+  .tk-big-fare { font-size: 44px; } .tk-price-block { margin-top: 18px; } .tk-evidence { font-size: 11px; } .tk-price-context { padding: 20px; }
   .tk-price-context dd { font-size: 15px; } .tk-data-credit { font-size: 9px; line-height: 1.9; } .tk-data-credit span { padding-inline: 5px; }
   .tk-window-position { max-width: none; } .tk-chart-surface { padding: 18px 8px 0; } .tk-chart-meta { padding-inline: 8px; font-size: 9px; }
-  .tk-lead-chart { height: 220px; } .tk-window-values > div { padding: 16px 2px; gap: 7px; } .tk-window-values span { font-size: 9px; }
+  .tk-calendar-toolbar { align-items: flex-start; flex-direction: column; } .tk-calendar-toolbar > div:last-child { width: 100%; } .tk-calendar-toolbar > div:last-child button:nth-child(2) { flex: 1; }
+  .tk-calendar-day { min-height: 64px; padding: 5px; } .tk-calendar-day > span { width: 22px; height: 22px; font-size: 10px; } .tk-calendar-day small { font-size: 7px; } .tk-calendar-day b { display: none; }
+  .tk-lead-chart { height: 220px; } .tk-elasticity-chart { height: 290px; } .tk-elasticity-legend { gap: 14px; font-size: 9px; } .tk-window-values > div { padding: 16px 2px; gap: 7px; } .tk-window-values span { font-size: 9px; }
   .tk-window-values strong { font-size: 10px; } .tk-window-values small { font-size: 8px; line-height: 1.6; } .tk-window-values { margin-inline: -2px; }
   .tk-lead-section { padding-bottom: 20px; } .tk-history summary { font-size: 11px; } .tk-history summary > span { font-size: 9px; }
   .tk-flight-card { gap: 18px 14px; grid-template-columns: 1fr 1fr; padding-block: 24px; }
@@ -258,6 +343,7 @@
   .tk-flight-duration { padding-left: 0; } .tk-flight-price { flex-direction: column; gap: 4px; align-items: flex-end; } .tk-flight-price strong { font-size: 25px; }
   .tk-flight-times strong { font-size: 20px; } .tk-sort select { font-size: 16px; } .tk-state { padding: 34px 20px; } .tk-state h3 { font-size: 17px; }
   .tk-trends-page { padding-block: 48px; } .tk-trends-page h1 { font-size: 42px; } .tk-trends-page > p:not(.tk-kicker) { font-size: 12px; } .tk-desktop-break { display: none; }
+  .tk-heat-legend { gap: 9px 14px; padding: 12px; border-radius: 10px; } .tk-heat-legend strong { flex-basis: 100%; } .tk-heatmap-scroll { max-height: 540px; margin-inline: -4px; }
   .tk-search-progress { min-height: 360px; padding: 80px 8px; } .tk-search-progress h1 { font-size: 22px; } .tk-pagination { font-size: 10px; } .tk-pagination > div { gap: 4px; }
 }
 @media (prefers-reduced-motion: reduce) { .tickety *, .tickety *::before, .tickety *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; } }

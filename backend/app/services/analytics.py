@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import func
 
 from app.database.models import FareObservation, RouteWeight
+from app.config.routes import ALLOWED_ROUTE_IDS
 from app.schemas.response import (
     RouteChangeSchema,
     AnomalySchema,
@@ -21,6 +22,7 @@ def get_route_change(db: Session, route_id: str, days: int = 7) -> Optional[Rout
         db.query(func.max(FareObservation.observation_date))
         .filter(
             FareObservation.route_id == route_id,
+            FareObservation.route_id.in_(ALLOWED_ROUTE_IDS),
             FareObservation.cleaning_status == "clean",
             FareObservation.fare.is_not(None),
         )
@@ -35,6 +37,7 @@ def get_route_change(db: Session, route_id: str, days: int = 7) -> Optional[Rout
         db.query(func.avg(FareObservation.fare))
         .filter(
             FareObservation.route_id == route_id,
+            FareObservation.route_id.in_(ALLOWED_ROUTE_IDS),
             FareObservation.observation_date == latest_date,
             FareObservation.cleaning_status == "clean",
             FareObservation.fare.is_not(None),
@@ -47,6 +50,7 @@ def get_route_change(db: Session, route_id: str, days: int = 7) -> Optional[Rout
         db.query(func.avg(FareObservation.fare))
         .filter(
             FareObservation.route_id == route_id,
+            FareObservation.route_id.in_(ALLOWED_ROUTE_IDS),
             FareObservation.observation_date <= past_date,
             FareObservation.cleaning_status == "clean",
             FareObservation.fare.is_not(None),
@@ -71,6 +75,7 @@ def get_overall_change(db: Session, days: int = 7) -> Optional[float]:
     Calculate overall percentage change in the Weighted Price Index over the last N days.
     """
     latest_date = db.query(func.max(FareObservation.observation_date)).filter(
+        FareObservation.route_id.in_(ALLOWED_ROUTE_IDS),
         FareObservation.cleaning_status == "clean",
         FareObservation.fare.is_not(None),
     ).scalar()
@@ -82,6 +87,7 @@ def get_overall_change(db: Session, days: int = 7) -> Optional[float]:
         db.query(func.max(FareObservation.observation_date))
         .filter(
             FareObservation.observation_date <= past_date,
+            FareObservation.route_id.in_(ALLOWED_ROUTE_IDS),
             FareObservation.cleaning_status == "clean",
             FareObservation.fare.is_not(None),
         )
@@ -103,6 +109,7 @@ def get_rolling_mean(db: Session, route_id: Optional[str] = None, window: int = 
     Compute the rolling N-day average fare for a route or network-wide.
     """
     latest_date = db.query(func.max(FareObservation.observation_date)).filter(
+        FareObservation.route_id.in_(ALLOWED_ROUTE_IDS),
         FareObservation.cleaning_status == "clean",
         FareObservation.fare.is_not(None),
     ).scalar()
@@ -111,6 +118,7 @@ def get_rolling_mean(db: Session, route_id: Optional[str] = None, window: int = 
         
     start_date = latest_date - timedelta(days=window)
     query = db.query(func.avg(FareObservation.fare)).filter(
+        FareObservation.route_id.in_(ALLOWED_ROUTE_IDS),
         FareObservation.observation_date >= start_date,
         FareObservation.cleaning_status == "clean",
         FareObservation.fare.is_not(None),
@@ -131,7 +139,10 @@ def detect_anomalies(
     Detect pricing anomalies using statistical Z-Score (|Z| > threshold).
     Z = (Fare - Mean) / StdDev
     """
-    query = db.query(FareObservation).filter(FareObservation.fare.is_not(None))
+    query = db.query(FareObservation).filter(
+        FareObservation.route_id.in_(ALLOWED_ROUTE_IDS),
+        FareObservation.fare.is_not(None),
+    )
     if route_id:
         query = query.filter(FareObservation.route_id == route_id)
         
@@ -173,12 +184,13 @@ def get_fare_status(db: Session) -> FareStatusResponse:
     """
     Get overall database health and fare observation statistics.
     """
-    total_obs = db.query(func.count(FareObservation.id)).scalar() or 0
-    unique_routes = db.query(func.count(func.distinct(FareObservation.route_id))).scalar() or 0
-    unique_airlines = db.query(func.count(func.distinct(FareObservation.airline))).scalar() or 0
-    last_updated = db.query(func.max(FareObservation.created_at)).scalar()
-    earliest_date = db.query(func.min(FareObservation.observation_date)).scalar()
-    latest_date = db.query(func.max(FareObservation.observation_date)).scalar()
+    basket = FareObservation.route_id.in_(ALLOWED_ROUTE_IDS)
+    total_obs = db.query(func.count(FareObservation.id)).filter(basket).scalar() or 0
+    unique_routes = db.query(func.count(func.distinct(FareObservation.route_id))).filter(basket).scalar() or 0
+    unique_airlines = db.query(func.count(func.distinct(FareObservation.airline))).filter(basket).scalar() or 0
+    last_updated = db.query(func.max(FareObservation.created_at)).filter(basket).scalar()
+    earliest_date = db.query(func.min(FareObservation.observation_date)).filter(basket).scalar()
+    latest_date = db.query(func.max(FareObservation.observation_date)).filter(basket).scalar()
     
     return FareStatusResponse(
         has_data=total_obs > 0,
@@ -202,7 +214,9 @@ def get_analytics_summary(db: Session, route_id: Optional[str] = None) -> Analyt
             route_changes.append(change)
     else:
         # Get top routes
-        top_routes = db.query(RouteWeight.route_id).order_by(RouteWeight.weight.desc()).limit(10).all()
+        top_routes = db.query(RouteWeight.route_id).filter(
+            RouteWeight.route_id.in_(ALLOWED_ROUTE_IDS)
+        ).order_by(RouteWeight.weight.desc()).all()
         for (r_id,) in top_routes:
             chg = get_route_change(db, r_id, days=7)
             if chg:

@@ -1,4 +1,7 @@
 import type { Airport, FlightRoute, RouteWeight } from '../../types';
+import routeConfig from '../../../../config/routes.json';
+
+const configuredDisplayRouteIds = new Set(routeConfig.routes.map(route => route.displayId));
 
 // One Shared Source of Truth for India Geographic Geometry & Coordinates
 export interface IndiaStatePath {
@@ -235,7 +238,7 @@ export const AVIATION_HUBS: AviationHub[] = [
 ];
 
 // Active routes strictly between the TOP 6 LOCATIONS only
-export const TOP_6_ROUTES: MapRouteArc[] = [
+export const TOP_6_ROUTES: MapRouteArc[] = ([
   {
     id: 'DEL-BOM',
     originCode: 'DEL',
@@ -495,7 +498,7 @@ export const TOP_6_ROUTES: MapRouteArc[] = [
     observations: 980,
     dominantCarrier: 'Akasa Air / IndiGo',
   },
-];
+] as MapRouteArc[]).filter(route => configuredDisplayRouteIds.has(route.id));
 
 /** Replace legacy map metrics with the current backend response before mount. */
 export function applyLiveMapData(

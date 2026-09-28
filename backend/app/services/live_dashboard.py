@@ -10,6 +10,7 @@ from statistics import mean, pstdev
 from sqlalchemy.orm import Session
 
 from app.database.models import CPIReference, FareObservation, RouteWeight, ScrapeRun
+from app.config.routes import ALLOWED_ROUTE_IDS
 from app.services.index_engine import get_index_history
 from app.services.loader import normalize_cpi_month
 
@@ -78,7 +79,9 @@ def _round(value: float | None, digits: int = 1) -> float:
 
 
 def build_live_dashboard(db: Session) -> dict:
-    weights = db.query(RouteWeight).order_by(RouteWeight.weight.desc()).limit(24).all()
+    weights = db.query(RouteWeight).filter(
+        RouteWeight.route_id.in_(ALLOWED_ROUTE_IDS)
+    ).order_by(RouteWeight.weight.desc()).all()
     weight_by_route = {row.route_id: row for row in weights}
     route_ids = set(weight_by_route)
     # Project only fields used below. Loading full ORM entities also loads the
@@ -289,9 +292,14 @@ def build_live_dashboard(db: Session) -> dict:
             "deviation": change,
         })
 
-    total_all = db.query(FareObservation).count()
-    clean_count = db.query(FareObservation).filter(FareObservation.cleaning_status == "clean").count()
-    priced_count = db.query(FareObservation).filter(FareObservation.fare.is_not(None)).count()
+    basket_filter = FareObservation.route_id.in_(route_ids)
+    total_all = db.query(FareObservation).filter(basket_filter).count()
+    clean_count = db.query(FareObservation).filter(
+        basket_filter, FareObservation.cleaning_status == "clean"
+    ).count()
+    priced_count = db.query(FareObservation).filter(
+        basket_filter, FareObservation.fare.is_not(None)
+    ).count()
     latest_at = max(((row.collected_at or row.created_at) for row in observations), default=None)
     freshness = 0
     if latest_at:

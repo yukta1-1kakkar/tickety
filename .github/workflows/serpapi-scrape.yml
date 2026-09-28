@@ -1,0 +1,28 @@
+name: VayuSetu SerpAPI scrape
+
+on:
+  schedule:
+    # 24 routes x 5 lead-time buckets x 2 runs = 240 searches/month.
+    - cron: "17 2 1,15 * *"
+
+concurrency:
+  group: vayusetu-serpapi-monthly
+  cancel-in-progress: false
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install -r backend/requirements.txt -r scraper/requirements.txt
+      - name: Scrape 24 configured routes across all five lead times
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          SERPAPI_API_KEY: ${{ secrets.SERPAPI_API_KEY }}
+          VAYUSETU_AUTO_ETL: "true"
+        run: python -m scraper.google_flights

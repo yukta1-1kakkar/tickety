@@ -11,6 +11,17 @@ export type Fare = {
   observation_date: string; collected_at: string | null; advance_purchase_days: number;
 };
 export type LeadPoint = { days: number; fare: number | null; count: number };
+export type NetworkTrendPoint = {
+  days: number; fare: number | null; routes: number; observations: number;
+  index: number | null; changePercent: number | null;
+  firstObservation: string | null; lastObservation: string | null;
+};
+export type NetworkTrend = {
+  points: NetworkTrendPoint[]; method: string; routeId: string | null; baselineWindow: number | null;
+};
+export type HeatmapCell = { days: number; fare: number | null; observations: number; changePercent: number | null };
+export type HeatmapRoute = { routeId: string; displayId: string; weight: number; cells: HeatmapCell[] };
+export type FareHeatmap = { windows: number[]; routes: HeatmapRoute[]; baselineWindow: number };
 export type HistoryPoint = { date: string; fare: number; count: number };
 export type Intelligence = {
   routeId: string; departureDate: string; current: Fare | null; flights: Fare[];

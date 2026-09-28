@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import csv
+import json
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -56,9 +57,7 @@ INDIAN_CITY_AIRPORTS: dict[str, str] = {
 }
 
 
-DEFAULT_ROUTE_CSV = (
-    Path(__file__).resolve().parent.parent / "backend" / "data" / "processed" / "route_weights.csv"
-)
+DEFAULT_ROUTE_CSV = Path(__file__).resolve().parent.parent / "config" / "routes.json"
 
 
 @dataclass(frozen=True)
@@ -87,9 +86,19 @@ def load_domestic_routes(csv_path: str | Path = DEFAULT_ROUTE_CSV) -> tuple[list
     seen: set[str] = set()
     path = Path(csv_path)
     with path.open(encoding="utf-8-sig", newline="") as handle:
-        reader = csv.DictReader(handle)
+        if path.suffix.lower() == ".json":
+            payload = json.load(handle)
+            reader = ({
+                "route_id": row["routeId"], "origin": row["origin"],
+                "destination": row["destination"],
+                "total_passengers": row["totalPassengers"], "weight": row["weight"],
+            } for row in payload.get("routes", []))
+            fieldnames = {"route_id", "origin", "destination", "total_passengers", "weight"}
+        else:
+            reader = csv.DictReader(handle)
+            fieldnames = set(reader.fieldnames or [])
         required = {"route_id", "origin", "destination", "total_passengers", "weight"}
-        missing = required - set(reader.fieldnames or [])
+        missing = required - fieldnames
         if missing:
             raise ValueError(f"Route CSV is missing columns: {', '.join(sorted(missing))}")
         for line_number, row in enumerate(reader, start=2):

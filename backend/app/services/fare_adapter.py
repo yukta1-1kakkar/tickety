@@ -4,6 +4,7 @@ from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.database.models import RouteWeight, FareObservation
+from app.config.routes import is_configured_route
 from app.schemas.ingest import FareIngestSchema
 
 def ingest_fare(db: Session, fare_data: FareIngestSchema) -> FareObservation:
@@ -13,6 +14,11 @@ def ingest_fare(db: Session, fare_data: FareIngestSchema) -> FareObservation:
     - Performs upsert (updates fare if identical route/airline/travel_date/obs_date exists).
     """
     route_id = fare_data.route_id.strip().upper()
+    if not is_configured_route(route_id):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Route '{route_id}' is outside the configured 24-route basket."
+        )
     
     # Check if route exists in RouteWeight
     route = db.query(RouteWeight).filter(RouteWeight.route_id == route_id).first()
@@ -90,6 +96,8 @@ def ingest_bulk_fares(db: Session, fare_list: List[FareIngestSchema]) -> Dict[st
     for item in fare_list:
         try:
             route_id = item.route_id.strip().upper()
+            if not is_configured_route(route_id):
+                raise ValueError(f"Route '{route_id}' is outside the configured 24-route basket")
             route = db.query(RouteWeight).filter(RouteWeight.route_id == route_id).first()
             if not route:
                 parts = route_id.split("-")

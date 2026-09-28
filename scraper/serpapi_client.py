@@ -79,7 +79,9 @@ class SerpAPIClient:
     @staticmethod
     def _looks_like_quota(message: str) -> bool:
         lowered = message.lower()
-        return any(term in lowered for term in ("quota", "searches per month", "credits", "account limit"))
+        return any(term in lowered for term in (
+            "quota", "searches per month", "run out of searches", "credits", "account limit",
+        ))
 
     @classmethod
     def _raise_api_error(cls, payload: dict) -> None:

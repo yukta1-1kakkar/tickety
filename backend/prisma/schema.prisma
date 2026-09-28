@@ -56,7 +56,7 @@ model FareObservation {
   departureTime       DateTime?   @map("departure_time") @db.Timestamptz(6)
   arrivalTime         DateTime?   @map("arrival_time") @db.Timestamptz(6)
   tripType            String      @default("one_way") @map("trip_type") @db.VarChar(20)
-  cabin               String      @default("economy") @db.VarChar(30)
+  cabin               String      @default("economy") @db.VarChar(80)
   stops               Int?
   durationMinutes     Int?        @map("duration_minutes")
   fare                Float?

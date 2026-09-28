@@ -10,6 +10,7 @@ from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from app.database.models import FareObservation, RouteWeight
+from app.config.routes import ALLOWED_ROUTE_IDS
 from app.schemas.response import IndexComponentSchema, IndexHistoryPoint, IndexHistoryResponse, IndexResponse
 
 
@@ -18,6 +19,7 @@ def _available_dates(db: Session, advance_purchase_days: int) -> list[date]:
         db.query(FareObservation.observation_date)
         .filter(
             FareObservation.advance_purchase_days == advance_purchase_days,
+            FareObservation.route_id.in_(ALLOWED_ROUTE_IDS),
             FareObservation.cleaning_status == "clean",
             FareObservation.fare.is_not(None),
         )
@@ -42,6 +44,7 @@ def _route_cohort_averages(
         )
         .filter(
             FareObservation.observation_date == observation_date,
+            FareObservation.route_id.in_(ALLOWED_ROUTE_IDS),
             FareObservation.advance_purchase_days == advance_purchase_days,
             FareObservation.cleaning_status == "clean",
             FareObservation.fare.is_not(None),
@@ -79,9 +82,8 @@ def _price_relative_index(
     """
     basket = (
         db.query(RouteWeight)
-        .filter(RouteWeight.weight > 0)
+        .filter(RouteWeight.weight > 0, RouteWeight.route_id.in_(ALLOWED_ROUTE_IDS))
         .order_by(RouteWeight.weight.desc())
-        .limit(24)
         .all()
     )
     route_map = {row.route_id: row for row in basket}

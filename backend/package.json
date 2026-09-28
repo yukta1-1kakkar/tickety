@@ -6,7 +6,9 @@
     "db:format": "prisma format",
     "db:migrate": "prisma migrate dev",
     "db:deploy": "prisma migrate deploy",
-    "db:studio": "prisma studio"
+    "db:studio": "prisma studio",
+    "history:check": "python scripts/import_historical_data.py --dry-run",
+    "history:import": "python scripts/import_historical_data.py"
   },
   "dependencies": {
     "dotenv": "^17.2.2",

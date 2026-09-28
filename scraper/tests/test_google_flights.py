@@ -36,12 +36,12 @@ def response_payload():
     }
 
 
-def test_complete_csv_basket_is_domestic_and_resolved():
+def test_configured_basket_is_domestic_and_resolved():
     routes, rejected = load_domestic_routes(DEFAULT_ROUTE_CSV)
 
-    assert len(routes) == 765
+    assert len(routes) == 24
     assert rejected == []
-    assert len({route.route_id for route in routes}) == 765
+    assert len({route.route_id for route in routes}) == 24
 
 
 def test_parser_produces_flat_serpapi_schema():
@@ -87,6 +87,10 @@ def test_batch_keeps_running_after_one_search_failure(tmp_path):
 def test_quota_errors_are_identified_from_json_payload():
     with pytest.raises(SerpAPIQuotaError):
         SerpAPIClient._raise_api_error({"error": "Your account has run out of searches per month."})
+
+
+def test_live_quota_error_wording_is_identified():
+    assert SerpAPIClient._looks_like_quota("Your account has run out of searches.")
 
 
 def test_parser_handles_missing_price_insights_and_no_flights():

@@ -14,6 +14,7 @@ from sqlalchemy.orm import Session
 
 from app.database.db import SessionLocal
 from app.database.models import FareObservation, RouteWeight
+from app.config.routes import ALLOWED_ROUTE_IDS
 from app.services.index_engine import get_index_history
 
 
@@ -67,6 +68,7 @@ def run_apix_backtest(
         )
         .filter(
             FareObservation.observation_date.in_(dates),
+            FareObservation.route_id.in_(ALLOWED_ROUTE_IDS),
             FareObservation.advance_purchase_days == advance_purchase_days,
             FareObservation.cleaning_status == "clean",
             FareObservation.fare.is_not(None),
@@ -106,9 +108,8 @@ def run_apix_backtest(
     minimum_coverage = min(float(point.coverage_weight) for point in history)
     basket_weights = [float(row[0]) for row in (
         db.query(RouteWeight.weight)
-        .filter(RouteWeight.weight > 0)
+        .filter(RouteWeight.weight > 0, RouteWeight.route_id.in_(ALLOWED_ROUTE_IDS))
         .order_by(RouteWeight.weight.desc())
-        .limit(24)
         .all()
     )]
     basket_weight = sum(basket_weights)

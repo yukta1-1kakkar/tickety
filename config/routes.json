@@ -1,0 +1,31 @@
+{
+  "version": 1,
+  "source": "backend/data/processed/route_weights.csv",
+  "selection": "Top 24 directional routes by descending weight",
+  "routes": [
+    {"routeId":"DELHI-MUMBAI","displayId":"DEL-BOM","origin":"DELHI","destination":"MUMBAI","originAirport":"DEL","destinationAirport":"BOM","totalPassengers":4029444,"weight":0.040979},
+    {"routeId":"BENGALURU-DELHI","displayId":"BLR-DEL","origin":"BENGALURU","destination":"DELHI","originAirport":"BLR","destinationAirport":"DEL","totalPassengers":2885936,"weight":0.029345},
+    {"routeId":"BENGALURU-MUMBAI","displayId":"BLR-BOM","origin":"BENGALURU","destination":"MUMBAI","originAirport":"BLR","destinationAirport":"BOM","totalPassengers":2476421,"weight":0.025181},
+    {"routeId":"DELHI-HYDERABAD","displayId":"DEL-HYD","origin":"DELHI","destination":"HYDERABAD","originAirport":"DEL","destinationAirport":"HYD","totalPassengers":1862287,"weight":0.018936},
+    {"routeId":"DELHI-KOLKATA","displayId":"DEL-CCU","origin":"DELHI","destination":"KOLKATA","originAirport":"DEL","destinationAirport":"CCU","totalPassengers":1778985,"weight":0.018089},
+    {"routeId":"DELHI-PUNE","displayId":"DEL-PNQ","origin":"DELHI","destination":"PUNE","originAirport":"DEL","destinationAirport":"PNQ","totalPassengers":1704284,"weight":0.01733},
+    {"routeId":"GOA-MUMBAI","displayId":"GOI-BOM","origin":"GOA","destination":"MUMBAI","originAirport":"GOI,GOX","destinationAirport":"BOM","totalPassengers":1495328,"weight":0.015205},
+    {"routeId":"AHMEDABAD-DELHI","displayId":"AMD-DEL","origin":"AHMEDABAD","destination":"DELHI","originAirport":"AMD","destinationAirport":"DEL","totalPassengers":1402813,"weight":0.014264},
+    {"routeId":"DELHI-GOA","displayId":"DEL-GOI","origin":"DELHI","destination":"GOA","originAirport":"DEL","destinationAirport":"GOI,GOX","totalPassengers":1352032,"weight":0.013748},
+    {"routeId":"CHENNAI-MUMBAI","displayId":"MAA-BOM","origin":"CHENNAI","destination":"MUMBAI","originAirport":"MAA","destinationAirport":"BOM","totalPassengers":1312448,"weight":0.013345},
+    {"routeId":"HYDERABAD-MUMBAI","displayId":"HYD-BOM","origin":"HYDERABAD","destination":"MUMBAI","originAirport":"HYD","destinationAirport":"BOM","totalPassengers":1285881,"weight":0.013075},
+    {"routeId":"KOLKATA-MUMBAI","displayId":"CCU-BOM","origin":"KOLKATA","destination":"MUMBAI","originAirport":"CCU","destinationAirport":"BOM","totalPassengers":1281897,"weight":0.013035},
+    {"routeId":"CHENNAI-DELHI","displayId":"MAA-DEL","origin":"CHENNAI","destination":"DELHI","originAirport":"MAA","destinationAirport":"DEL","totalPassengers":1277274,"weight":0.012988},
+    {"routeId":"BENGALURU-HYDERABAD","displayId":"BLR-HYD","origin":"BENGALURU","destination":"HYDERABAD","originAirport":"BLR","destinationAirport":"HYD","totalPassengers":1217734,"weight":0.012382},
+    {"routeId":"AHMEDABAD-MUMBAI","displayId":"AMD-BOM","origin":"AHMEDABAD","destination":"MUMBAI","originAirport":"AMD","destinationAirport":"BOM","totalPassengers":1215086,"weight":0.012355},
+    {"routeId":"BENGALURU-KOLKATA","displayId":"BLR-CCU","origin":"BENGALURU","destination":"KOLKATA","originAirport":"BLR","destinationAirport":"CCU","totalPassengers":1204113,"weight":0.012244},
+    {"routeId":"DELHI-SRINAGAR","displayId":"DEL-SXR","origin":"DELHI","destination":"SRINAGAR","originAirport":"DEL","destinationAirport":"SXR","totalPassengers":1141145,"weight":0.011604},
+    {"routeId":"BENGALURU-PUNE","displayId":"BLR-PNQ","origin":"BENGALURU","destination":"PUNE","originAirport":"BLR","destinationAirport":"PNQ","totalPassengers":1079353,"weight":0.010975},
+    {"routeId":"DELHI-GUWAHATI","displayId":"DEL-GAU","origin":"DELHI","destination":"GUWAHATI","originAirport":"DEL","destinationAirport":"GAU","totalPassengers":938099,"weight":0.009539},
+    {"routeId":"DELHI-PATNA","displayId":"DEL-PAT","origin":"DELHI","destination":"PATNA","originAirport":"DEL","destinationAirport":"PAT","totalPassengers":908354,"weight":0.009236},
+    {"routeId":"BENGALURU-GOA","displayId":"BLR-GOI","origin":"BENGALURU","destination":"GOA","originAirport":"BLR","destinationAirport":"GOI,GOX","totalPassengers":875214,"weight":0.008899},
+    {"routeId":"BENGALURU-CHENNAI","displayId":"BLR-MAA","origin":"BENGALURU","destination":"CHENNAI","originAirport":"BLR","destinationAirport":"MAA","totalPassengers":872523,"weight":0.008872},
+    {"routeId":"DELHI-LUCKNOW","displayId":"DEL-LKO","origin":"DELHI","destination":"LUCKNOW","originAirport":"DEL","destinationAirport":"LKO","totalPassengers":854555,"weight":0.008689},
+    {"routeId":"KOCHI-MUMBAI","displayId":"COK-BOM","origin":"KOCHI","destination":"MUMBAI","originAirport":"COK","destinationAirport":"BOM","totalPassengers":805813,"weight":0.008194}
+  ]
+}

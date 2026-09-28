@@ -1,7 +1,7 @@
 # VAYUSETU SerpAPI Google Flights collector
 
-`google_flights.py` reads the complete directional basket from
-`backend/data/processed/route_weights.csv`, validates both endpoints against
+`google_flights.py` reads the top-24 directional basket from
+`config/routes.json`, validates both endpoints against
 the Indian-airport registry, and searches T+1, T+7, T+15, T+30 and T+60.
 It sends one-way Economy searches for one adult with `gl=in`, `hl=en`
 and `currency=INR`.
@@ -19,10 +19,17 @@ Run a one-route smoke test before committing quota to the full basket:
 python google_flights.py --max-routes 1 --no-etl
 ```
 
-The complete run performs 3,825 searches (765 routes x 5 lead times):
+The complete run performs 120 searches (24 routes x 5 lead times):
 
 ```powershell
 python google_flights.py
+```
+
+If a quota-limited run stops after complete routes, resume from the next
+one-based configured route number without repeating earlier paid searches:
+
+```powershell
+python google_flights.py --start-route 12
 ```
 
 Every response is retained under `backend/data/raw/google_flights`, grouped

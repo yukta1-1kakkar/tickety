@@ -5,6 +5,7 @@ from sqlalchemy import or_
 
 from app.database.db import get_db
 from app.database.models import RouteWeight
+from app.config.routes import ALLOWED_ROUTE_IDS
 from app.schemas.response import RouteSchema, RouteListResponse
 
 router = APIRouter(prefix="/routes", tags=["Routes"])
@@ -19,7 +20,7 @@ def list_routes(
     """
     Retrieve list of domestic air routes with DGCA passenger traffic weights.
     """
-    query = db.query(RouteWeight)
+    query = db.query(RouteWeight).filter(RouteWeight.route_id.in_(ALLOWED_ROUTE_IDS))
     if search:
         s = f"%{search.strip().upper()}%"
         query = query.filter(
@@ -44,7 +45,9 @@ def get_route(route_id: str, db: Session = Depends(get_db)):
     Retrieve single route weight record by its identifier (e.g. 'DEL-BOM').
     """
     r_id = route_id.strip().upper()
-    route = db.query(RouteWeight).filter(RouteWeight.route_id == r_id).first()
+    route = db.query(RouteWeight).filter(
+        RouteWeight.route_id == r_id, RouteWeight.route_id.in_(ALLOWED_ROUTE_IDS)
+    ).first()
     if not route:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

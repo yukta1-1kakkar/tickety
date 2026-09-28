@@ -105,18 +105,62 @@ def test_flight_comparison_keeps_only_the_latest_search(fares_client):
     assert all("raw_payload" not in row for row in payload["flights"])
 
 
-def test_coverage_distinguishes_registered_and_observed_routes(fares_client):
+def test_coverage_excludes_routes_outside_configured_basket(fares_client):
     client, db = fares_client
     db.add(RouteWeight(route_id="BOM-DEL", origin="Mumbai", destination="Delhi", weight=0))
     db.commit()
     empty = client.get("/api/fares/coverage").json()
-    assert empty == {"registeredRoutes": 2, "observedRoutes": 0, "observations": 0, "observedWindows": [], "updatedAt": None}
+    assert empty == {"registeredRoutes": 1, "observedRoutes": 0, "observations": 0, "observedWindows": [], "updatedAt": None}
     add_fare(db, days=60)
     add_fare(db, days=7)
     add_fare(db, days=1, is_synthetic=True)
     covered = client.get("/api/fares/coverage").json()
-    assert covered["registeredRoutes"] == 2
+    assert covered["registeredRoutes"] == 1
     assert covered["observedRoutes"] == 1
     assert covered["observations"] == 2
     assert covered["observedWindows"] == [60, 7]
     assert covered["updatedAt"].startswith("2026-10-08")
+
+
+def test_trends_render_all_windows_without_route_or_date_selection(fares_client):
+    client, db = fares_client
+    add_fare(db, fare=4200, days=60, source="legacy-airline")
+    add_fare(db, fare=4800, days=30)
+    add_fare(db, fare=5400, days=15)
+    add_fare(db, fare=6100, days=7)
+    add_fare(db, fare=9000, days=1, is_synthetic=True)
+
+    payload = client.get("/api/fares/trends").json()
+
+    assert [point["days"] for point in payload["points"]] == [60, 30, 15, 7, 1]
+    assert [point["fare"] for point in payload["points"]] == [4200, 4800, 5400, 6100, None]
+    assert payload["points"][0]["routes"] == 1
+    assert payload["points"][0]["observations"] == 1
+    assert [point["index"] for point in payload["points"]] == [100, 114.29, 128.57, 145.24, None]
+    assert payload["routeId"] is None
+    assert payload["baselineWindow"] == 60
+    assert payload["method"] == "Lead-time fare index; longest observed window equals 100"
+
+    route_payload = client.get("/api/fares/trends", params={"route_id": "DEL-BOM"}).json()
+    assert route_payload["routeId"] == "DEL-BOM"
+    assert route_payload["points"] == payload["points"]
+    assert client.get("/api/fares/trends", params={"route_id": "BOM-DEL"}).status_code == 404
+
+
+def test_trends_heatmap_returns_route_cells_relative_to_t60(fares_client):
+    client, db = fares_client
+    add_fare(db, fare=5000, days=60)
+    add_fare(db, fare=4000, days=30)
+    add_fare(db, fare=6250, days=1)
+
+    payload = client.get("/api/fares/trends/heatmap").json()
+
+    assert payload["windows"] == [1, 7, 15, 30, 60]
+    assert len(payload["routes"]) == 24
+    route = next(row for row in payload["routes"] if row["displayId"] == "DEL-BOM")
+    assert [cell["days"] for cell in route["cells"]] == [1, 7, 15, 30, 60]
+    assert route["cells"][0]["fare"] == 6250
+    assert route["cells"][0]["changePercent"] == 25
+    assert route["cells"][3]["changePercent"] == -20
+    assert route["cells"][4]["changePercent"] == 0
+    assert route["cells"][1] == {"days": 7, "fare": None, "observations": 0, "changePercent": None}

@@ -268,3 +268,68 @@ The dashboard compares monthly APIx with All-India General CPI (Combined),
 rebasing both series to 100 at their first overlapping month. This workbook
 does not contain the Transport & Communication sub-group, so that series is
 reported as unavailable rather than estimated.
+
+## Top-24 route basket and historical import
+
+`../config/routes.json` is the single route source used by the SerpAPI
+collector, backend APIs/analytics, and frontend route basket. It contains the
+24 highest-weight rows from `data/processed/route_weights.csv`. The scheduled
+workflow runs on the 1st and 15th: 24 routes x 5 lead-time buckets x 2 runs is
+240 SerpAPI searches per month, leaving 10 searches of the 250-search plan as
+headroom. Each collector invocation also refuses more than 120 searches.
+
+Put both database URLs in `backend/.env`:
+
+```dotenv
+# New hackathon database (all API reads and all future writes)
+DATABASE_URL=postgresql://NEW_USER:PASSWORD@NEW_HOST:5432/vayusetu?sslmode=require
+
+# Old production database (historical reads only; use a SELECT-only role)
+OLD_DATABASE_URL=postgresql://READ_ONLY_USER:PASSWORD@OLD_HOST:5432/vayusetu?sslmode=require
+```
+
+The importer uses an independent historical engine, starts PostgreSQL
+transactions as read-only, and blocks non-read SQL in the client. It never
+uses the application/Prisma connection for the old database. First run the
+schema/count preflight, then import in batches:
+
+```powershell
+cd backend
+python scripts/import_historical_data.py --dry-run
+python scripts/import_historical_data.py --batch-size 1000
+```
+
+The source timestamps and all schema-compatible fare fields are preserved.
+The legacy-only fare-breakdown fields (`base_fare`, `taxes`,
+`user_development_fee`, `convenience_fee`, `mandatory_fees`, `fare_family`,
+`seats_available`, and `sold_out`) are intentionally omitted because they do
+not exist in the hackathon schema. The shared `fare` value is copied as-is;
+the importer does not recalculate or alter it.
+Old scrape-run foreign keys are intentionally cleared because their parent
+audit rows belong to the old database. Duplicate identity reuses the project's
+established natural combination: source/seller, route, airline/code, flight
+number, travel/departure time, lead time, and observation date. It is stored
+in the existing unique `record_fingerprint` column. Re-running the command is
+safe and should report zero inserted rows.
+
+Run this against the new database to verify coverage and that no natural-key
+duplicates exist:
+
+```sql
+SELECT COUNT(*) AS records,
+       COUNT(DISTINCT route_id) AS routes,
+       MIN(observation_date) AS first_observation,
+       MAX(observation_date) AS last_observation
+FROM fare_observations;
+
+SELECT record_fingerprint, COUNT(*)
+FROM fare_observations
+WHERE record_fingerprint IS NOT NULL
+GROUP BY 1
+HAVING COUNT(*) > 1;
+```
+
+The second query must return no rows. For an end-to-end count check, run the
+first query on both old and new databases before enabling new scraping; the
+new count can be higher if it already contained records, but never lower than
+the old source count after a clean import.

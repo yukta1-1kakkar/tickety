@@ -23,6 +23,8 @@ from app.database.models import (
     RouteWeight,
     ScrapeRun,
 )
+from app.services.record_identity import natural_fingerprint
+from app.config.routes import ALLOWED_ROUTE_IDS
 
 
 ADVANCE_WINDOWS = {1, 7, 15, 30, 60}
@@ -121,21 +123,7 @@ def _route_id(record: dict[str, Any]) -> str | None:
 
 
 def _fingerprint(record: dict[str, Any]) -> str:
-    identity = {
-        "source": record["source"],
-        "seller": record.get("seller_name"),
-        "route": record["route_id"],
-        "airline": record["airline"],
-        "airline_code": record.get("airline_code"),
-        "flight_number": record.get("flight_number"),
-        "travel_date": record["travel_date"].isoformat(),
-        "departure_time": record.get("departure_time").isoformat()
-        if record.get("departure_time") else None,
-        "advance_days": record["advance_purchase_days"],
-        "observation_date": record["observation_date"].isoformat(),
-    }
-    encoded = json.dumps(identity, sort_keys=True, separators=(",", ":")).encode()
-    return hashlib.sha256(encoded).hexdigest()
+    return natural_fingerprint(record)
 
 
 def normalize_record(raw: dict[str, Any], source_hint: str) -> tuple[dict[str, Any] | None, str | None]:
@@ -339,6 +327,13 @@ def load_scraper_file(path: Path, db: Session | None = None, *, dry_run: bool = 
                 rejected.append({
                     "source": source, "route_id": record["route_id"],
                     "reason": "route is absent from DGCA route weights",
+                    "raw_payload": record["raw_payload"],
+                })
+                continue
+            if record["route_id"] not in ALLOWED_ROUTE_IDS:
+                rejected.append({
+                    "source": source, "route_id": record["route_id"],
+                    "reason": "route is outside the configured 24-route basket",
                     "raw_payload": record["raw_payload"],
                 })
                 continue

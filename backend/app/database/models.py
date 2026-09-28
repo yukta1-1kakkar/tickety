@@ -73,7 +73,7 @@ class FareObservation(Base):
     departure_time = Column(DateTime(timezone=True), nullable=True)
     arrival_time = Column(DateTime(timezone=True), nullable=True)
     trip_type = Column(String(20), nullable=False, default="one_way")
-    cabin = Column(String(30), nullable=False, default="economy")
+    cabin = Column(String(80), nullable=False, default="economy")
     stops = Column(Integer, nullable=True)
     duration_minutes = Column(Integer, nullable=True)
     fare = Column(Float, nullable=True)
