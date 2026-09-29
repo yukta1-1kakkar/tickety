@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode } from 'react';
-import { ArrowDownRight, ArrowRight, CircleCheck, Plane, RefreshCw } from 'lucide-react';
+import { ArrowDownRight, ArrowRight, Building2, CircleCheck, Cloud, MapPin, Plane, RefreshCw } from 'lucide-react';
 import {
   collectedLabel, dateLabel, durationLabel, levelName, money, priceEvidence,
   routeParts, stopsLabel, timeLabel, type Fare,
@@ -84,4 +84,18 @@ export function SearchProgress() {
     return () => { window.clearTimeout(first); window.clearTimeout(second); };
   }, []);
   return <div className="tk-search-progress" role="status" aria-live="polite"><div className="tk-progress-line"><Plane size={20} /></div><h1>{['Checking airfare intelligence…', 'Comparing price context…', 'Building your fare picture…'][step]}</h1><p>Finding the latest stored observations for your route.</p></div>;
+}
+
+export function FlightJourneyVisual() {
+  return <section className="tk-flight-journey" aria-label="Air travel journey illustration">
+    <div className="tk-flight-journey-copy"><p className="tk-kicker">Across India, by air</p><h2>Every route starts with a runway.</h2><p>From departure gate to destination, one clear journey.</p></div>
+    <div className="tk-flight-scene" aria-hidden="true">
+      <Cloud className="tk-scene-cloud tk-scene-cloud-one" size={34} />
+      <Cloud className="tk-scene-cloud tk-scene-cloud-two" size={25} />
+      <div className="tk-scene-airport tk-scene-origin"><span><Building2 size={20} /></span><strong>Departure</strong><small>Gate ready</small></div>
+      <div className="tk-scene-route"><i /><span className="tk-scene-plane"><Plane size={25} /></span></div>
+      <div className="tk-scene-airport tk-scene-destination"><span><MapPin size={20} /></span><strong>Arrival</strong><small>India connected</small></div>
+      <div className="tk-scene-runway">{Array.from({ length: 13 }, (_, index) => <i key={index} />)}</div>
+    </div>
+  </section>;
 }

@@ -164,3 +164,15 @@ def test_trends_heatmap_returns_route_cells_relative_to_t60(fares_client):
     assert route["cells"][3]["changePercent"] == -20
     assert route["cells"][4]["changePercent"] == 0
     assert route["cells"][1] == {"days": 7, "fare": None, "observations": 0, "changePercent": None}
+
+
+def test_latest_route_fares_is_not_tied_to_one_departure_date(fares_client):
+    client, db = fares_client
+    add_fare(db, fare=4200, days=60, source="legacy")
+    newest = add_fare(db, fare=5100, days=7, source="legacy")
+
+    payload = client.get("/api/fares/latest").json()
+
+    assert len(payload["fares"]) == 1
+    assert payload["fares"][0]["id"] == newest.id
+    assert payload["fares"][0]["route_id"] == "DELHI-MUMBAI"

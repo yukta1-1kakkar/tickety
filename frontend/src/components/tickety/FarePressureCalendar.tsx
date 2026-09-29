@@ -76,7 +76,7 @@ export function FarePressureCalendar({ departureDate, routeId }: { departureDate
     <div className="tk-section-heading"><div><p className="tk-kicker">Calendar context</p><h2>Why this travel date may be busier</h2><p>Calendar events that can add demand pressure around {dateLabel(departureDate)}.</p></div></div>
     <div className="tk-demand-calendar-layout">
       <div className="tk-demand-calendar-card">
-        <div className="tk-calendar-toolbar"><div><CalendarDays size={18} /><strong>{monthLabel}</strong></div><div><button onClick={() => setVisibleMonth(value => new Date(value.getFullYear(), value.getMonth() - 1, 1))} aria-label="Previous month"><ChevronLeft size={17} /></button><button onClick={() => setVisibleMonth(new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1))}>Travel month</button><button onClick={() => setVisibleMonth(value => new Date(value.getFullYear(), value.getMonth() + 1, 1))} aria-label="Next month"><ChevronRight size={17} /></button></div></div>
+        <div className="tk-calendar-toolbar"><div className="tk-calendar-month"><span><CalendarDays size={18} /></span><div><small>Travel calendar</small><strong>{monthLabel}</strong></div></div><div className="tk-calendar-actions"><button onClick={() => setVisibleMonth(value => new Date(value.getFullYear(), value.getMonth() - 1, 1))} aria-label="Previous month"><ChevronLeft size={17} /></button><button onClick={() => setVisibleMonth(new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1))}>Travel month</button><button onClick={() => setVisibleMonth(value => new Date(value.getFullYear(), value.getMonth() + 1, 1))} aria-label="Next month"><ChevronRight size={17} /></button></div></div>
         <div className="tk-calendar-weekdays">{WEEKDAYS.map(day => <span key={day}>{day}</span>)}</div>
         <div className="tk-calendar-grid">{cells.map(date => {
           const key = keyFor(date);
@@ -85,7 +85,7 @@ export function FarePressureCalendar({ departureDate, routeId }: { departureDate
           const outside = date.getMonth() !== visibleMonth.getMonth();
           const selected = key === selectedKey;
           return <div key={key} className={`tk-calendar-day${outside ? ' is-outside' : ''}${weekend ? ' is-weekend' : ''}${holiday ? ' is-holiday' : ''}${selected ? ' is-selected' : ''}`} aria-label={`${dateLabel(key)}${holiday ? `, ${holiday.name}` : ''}${weekend ? ', weekend' : ''}${selected ? ', selected travel date' : ''}`}>
-            <span>{date.getDate()}</span>{holiday && <small>{holiday.name}</small>}{selected && <b>Travel</b>}
+            <span>{date.getDate()}</span>{holiday && <small><i />{holiday.name}</small>}{selected && <b>Travel day</b>}
           </div>;
         })}</div>
         <div className="tk-calendar-legend"><span><i className="is-travel" /> Travel date</span><span><i className="is-festival" /> Festival / holiday</span><span><i className="is-weekend" /> Weekend</span></div>

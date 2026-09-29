@@ -208,6 +208,43 @@ def compare_fares(departure_date: date, db: Session = Depends(get_db)):
     return {"departureDate": departure_date, "fares": [serialize(row) for row in rows]}
 
 
+@router.get("/latest", summary="Latest stored fare for every configured route")
+def latest_route_fares(db: Session = Depends(get_db)):
+    """Return at most one recent clean fare per configured route.
+
+    This powers the route catalogue without tying the page to one departure
+    date. Both canonical city IDs and retained airport-code aliases are folded
+    into the same configured route.
+    """
+    ranked = db.query(
+        Fare.id.label("id"),
+        func.row_number().over(partition_by=Fare.route_id, order_by=latest_order()).label("rank"),
+    ).filter(
+        Fare.route_id.in_(ALLOWED_ROUTE_IDS),
+        Fare.cleaning_status == "clean",
+        Fare.availability_status == "available",
+        Fare.is_synthetic.is_(False), Fare.is_outlier.is_(False),
+        Fare.fare > 0, Fare.currency == "INR",
+        Fare.trip_type == "one_way",
+        func.lower(Fare.cabin) == "economy",
+    ).subquery()
+    rows = (db.query(Fare).options(load_only(*(getattr(Fare, f) for f in FIELDS)))
+            .join(ranked, ranked.c.id == Fare.id).filter(ranked.c.rank == 1).all())
+    by_id = {row.route_id: row for row in rows}
+    fares = []
+    for route in configured_routes():
+        candidates = [by_id[alias] for alias in (route["routeId"], route["displayId"]) if alias in by_id]
+        if not candidates:
+            continue
+        latest = max(candidates, key=lambda row: (
+            row.observation_date.isoformat(), row.collected_at.isoformat() if row.collected_at else "",
+        ))
+        payload = serialize(latest)
+        payload["route_id"] = route["routeId"]
+        fares.append(payload)
+    return {"fares": fares}
+
+
 @router.get("", summary="Fare insights for an exact route and departure date")
 def fare_intelligence(
     departure_date: date,

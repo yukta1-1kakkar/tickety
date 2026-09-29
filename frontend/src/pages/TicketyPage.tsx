@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { ArrowLeft, ArrowRight, ArrowUpRight, ChartNoAxesCombined, Layers3, Menu, Plane, X } from 'lucide-react';
 import { Link, Navigate, NavLink, Outlet, useLocation, useOutletContext, useSearchParams } from 'react-router-dom';
-import { FareCard, FlightComparison, PriceContext, SearchProgress, State } from '../components/tickety/FareComponents';
+import { FareCard, FlightComparison, FlightJourneyVisual, PriceContext, SearchProgress, State } from '../components/tickety/FareComponents';
 import { FarePressureCalendar } from '../components/tickety/FarePressureCalendar';
 import { FareSearch } from '../components/tickety/FareSearch';
-import { LeadTimeElasticityChart, NetworkLeadTimeTrend, PriceHistory } from '../components/tickety/LeadTimeChart';
+import { LeadTimeElasticityChart, NetworkLeadTimeTrend } from '../components/tickety/LeadTimeChart';
 import { RouteExplorer } from '../components/tickety/RouteExplorer';
 import { dateLabel, routeLabel, timestampLabel, useApi, useRouteCatalog, validDate, type Catalog, type Coverage, type Intelligence, type Resource } from '../components/tickety/data';
 import './TicketyPage.css';
@@ -51,13 +51,13 @@ export function TicketyHome() {
   return <><section className="tk-hero tk-container"><div className="tk-hero-path" aria-hidden="true"><span /><i /><span /></div><p className="tk-kicker">Airfare intelligence, made personal</p><h1>Is this a <em>good fare?</em></h1><p className="tk-hero-copy">Check the price. Understand the trend. Book with context.</p><FareSearch catalog={catalog} />
     <div className="tk-hero-footnote"><span className="tk-status-dot" /> Price context, powered by Google Flights data via SerpAPI</div>
   </section>
-  <div className="tk-container"><section className="tk-how"><div><p className="tk-kicker">A price is just the beginning</p><h2>Know what’s<br />behind the number.</h2></div><div className="tk-how-item"><span>01 / The price</span><h3>Low, typical or high?</h3><p>See where the fare sits against Google Flights’ typical range.</p></div><div className="tk-how-item"><span>02 / The timing</span><h3>A little more perspective.</h3><p>Explore how observed fares change across five booking windows.</p></div><div className="tk-how-item"><span>03 / The evidence</span><h3>Context. Not guesswork.</h3><p>Real observations, clear sources and collection timestamps.</p></div></section><RouteExplorer catalog={catalog} compact /><CoverageStrip /></div></>;
+  <div className="tk-container"><section className="tk-how"><div><p className="tk-kicker">A price is just the beginning</p><h2>Know what’s<br />behind the number.</h2></div><div className="tk-how-item"><span>01 / The price</span><h3>Low, typical or high?</h3><p>See where the fare sits against Google Flights’ typical range.</p></div><div className="tk-how-item"><span>02 / The timing</span><h3>A little more perspective.</h3><p>Explore how observed fares change across five booking windows.</p></div><div className="tk-how-item"><span>03 / The evidence</span><h3>Context. Not guesswork.</h3><p>Real observations, clear sources and collection timestamps.</p></div></section><FlightJourneyVisual /><CoverageStrip /></div></>;
 }
 
 export function TicketyExplore() {
   const { catalog } = useOutletContext<TicketyContext>();
   const [params] = useSearchParams();
-  return <div className="tk-container tk-page"><RouteExplorer key={params.toString()} catalog={catalog} initialDate={params.get('date') || ''} /><CoverageStrip /></div>;
+  return <div className="tk-container tk-page tk-explore-page"><RouteExplorer key={params.toString()} catalog={catalog} initialDate={params.get('date') || ''} /><CoverageStrip /></div>;
 }
 
 export function TicketyTrends() {
@@ -77,9 +77,9 @@ function FareResult({ route, date }: { route: string; date: string }) {
     {resource.loading ? <SearchProgress /> : resource.error ? <State error title="We couldn’t build your fare picture." detail="Your route and date are saved. Try again to retrieve the latest observations." retry={resource.retry} />
       : resource.data?.current ? <><div className="tk-result-top"><FareCard fare={resource.data.current} /><PriceContext fare={resource.data.current} /></div><p className="tk-data-credit">Google Flights via SerpAPI <span>·</span> Price intelligence by VayuSetu</p>
         <FarePressureCalendar departureDate={date} routeId={route} />
-        <PriceHistory points={resource.data.history} /><FlightComparison flights={resource.data.flights ?? []} />
-      </> : <State title="No airfare observations yet." detail={`No stored fares for ${routeLabel(route)} on ${dateLabel(date)}. Try a different route or departure date.`}><button className="tk-text-button" onClick={() => setEdit(true)}>Change search <ArrowRight size={16} /></button></State>}
-    {!resource.loading && <RouteExplorer catalog={catalog} initialDate={date} compact />}
+        <FlightComparison flights={resource.data.flights ?? []} />
+      </> : !resource.loading && !resource.error ? <FarePressureCalendar departureDate={date} routeId={route} /> : null}
+    {!resource.loading && <FlightJourneyVisual />}
   </div>;
 }
 

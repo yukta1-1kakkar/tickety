@@ -26,7 +26,7 @@
 .tk-intelligence-link { display: inline-flex; align-items: center; gap: 16px; border-left: 1px solid var(--tk-line); padding: 8px 0 8px 30px; font-size: 12px; }
 .tk-menu { display: none; }
 .tk-kicker { font: 600 10px/1.5 'Inter', sans-serif; color: var(--tk-green); text-transform: uppercase; letter-spacing: .14em; }
-.tk-hero { text-align: center; padding-top: 60px; padding-bottom: 65px; }
+.tk-hero { text-align: center; padding-top: 24px; padding-bottom: 65px; }
 .tk-hero-path { display: flex; align-items: center; justify-content: center; margin: 0 auto 30px; width: 140px; height: 16px; }
 .tk-hero-path span { width: 5px; height: 5px; border: 1px solid #6a8b75; border-radius: 50%; }
 .tk-hero-path i { flex: 1; border-top: 1px dashed #9caf9f; margin: 0 5px; height: 17px; border-radius: 50% 50% 0 0; transform: translateY(-7px); }
@@ -50,12 +50,32 @@
 .tk-how-item > span { color: var(--tk-green); font: 10px/1.5 'JetBrains Mono', monospace; }
 .tk-how h3 { font-size: 13px; font-weight: 650; margin: 16px 0 8px; }
 .tk-how-item p { color: var(--tk-muted); font-size: 12px; line-height: 1.8; }
+.tk-flight-journey { display: grid; grid-template-columns: minmax(260px, .72fr) minmax(0, 1.28fr); min-height: 270px; margin: 46px 0; overflow: hidden; border: 1px solid #d6e0d5; border-radius: 14px; background: #eef4e9; }
+.tk-flight-journey-copy { display: flex; flex-direction: column; justify-content: center; padding: 38px; }
+.tk-flight-journey-copy h2 { margin-top: 10px; font-size: clamp(25px, 3vw, 36px); line-height: 1.2; font-weight: 600; letter-spacing: -.045em; }
+.tk-flight-journey-copy > p:not(.tk-kicker) { margin-top: 13px; max-width: 310px; color: var(--tk-muted); font-size: 11px; line-height: 1.8; }
+.tk-flight-scene { position: relative; min-height: 270px; overflow: hidden; border-left: 1px solid #d6e0d5; background: linear-gradient(180deg, #f8fbf4 0 65%, #dfe9d9 65% 100%); }
+.tk-scene-cloud { position: absolute; color: #b8cbbd; opacity: .72; animation: tk-cloud-drift 6s ease-in-out infinite alternate; }
+.tk-scene-cloud-one { top: 31px; left: 21%; }
+.tk-scene-cloud-two { top: 67px; right: 18%; animation-delay: -2.5s; }
+.tk-scene-airport { position: absolute; bottom: 53px; z-index: 3; display: flex; flex-direction: column; align-items: center; min-width: 88px; color: var(--tk-ink); }
+.tk-scene-airport > span { width: 46px; height: 46px; display: flex; align-items: center; justify-content: center; margin-bottom: 8px; border: 1px solid #c5d5c5; border-radius: 50%; background: #fbfcf8; color: var(--tk-green); box-shadow: 0 8px 18px -15px #1e4939; }
+.tk-scene-airport strong { font-size: 10px; }
+.tk-scene-airport small { margin-top: 3px; color: var(--tk-muted); font-size: 8px; }
+.tk-scene-origin { left: 6%; }
+.tk-scene-destination { right: 6%; }
+.tk-scene-route { position: absolute; top: 42%; left: 17%; right: 17%; height: 72px; }
+.tk-scene-route > i { position: absolute; inset: 0; border-top: 1px dashed #83a48d; border-radius: 50% 50% 0 0; transform: translateY(24px); }
+.tk-scene-plane { position: absolute; top: 4px; left: 3%; z-index: 4; display: inline-flex; padding: 5px; border-radius: 50%; background: #f8fbf4; color: var(--tk-green); transform: rotate(12deg); animation: tk-journey-flight 5.5s ease-in-out infinite; }
+.tk-scene-runway { position: absolute; left: 8%; right: 8%; bottom: 18px; display: flex; justify-content: space-between; align-items: center; padding-top: 8px; border-top: 2px solid #91a68e; }
+.tk-scene-runway i { width: 4px; height: 4px; border-radius: 50%; background: #6e8d76; animation: tk-runway-light 1.4s ease-in-out infinite alternate; }
+.tk-scene-runway i:nth-child(2n) { animation-delay: -.7s; }
 .tk-section { padding: 64px 0; scroll-margin-top: 24px; min-width: 0; }
 .tk-section-heading { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 28px; }
 .tk-section-heading h2 { font-size: clamp(25px, 3vw, 34px); font-weight: 600; line-height: 1.3; letter-spacing: -.045em; margin-top: 9px; }
 .tk-section-heading p:not(.tk-kicker) { color: var(--tk-muted); font-size: 12px; line-height: 1.8; margin-top: 10px; }
 .tk-text-button { display: inline-flex; align-items: center; justify-content: center; gap: 10px; color: var(--tk-green); font-weight: 600; font-size: 12px; padding: 10px 0; }
-.tk-explore-controls { display: grid; grid-template-columns: 1.3fr 1fr 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+.tk-explore-controls { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(220px, .8fr); gap: 16px; margin-bottom: 24px; }
 .tk-explore-controls label { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
 .tk-explore-controls label > span { color: var(--tk-muted); font-size: 10px; }
 .tk-explore-controls :is(input, select) { width: 100%; min-height: 44px; font-size: 12px; padding: 10px 12px; border: 1px solid var(--tk-line); border-radius: 4px; background: transparent; }
@@ -71,6 +91,7 @@
 .tk-route-card-top, .tk-route-card-bottom { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-width: 0; }
 .tk-route-card-bottom { margin: 20px 0 4px; }
 .tk-route-card-bottom > strong { font: 650 26px/1.2 'Manrope', sans-serif; letter-spacing: -.05em; }
+.tk-route-card-bottom > .tk-route-fare-unavailable { font-size: 16px; letter-spacing: -.025em; }
 .tk-route-name { display: inline-flex; align-items: center; gap: 12px; min-width: 0; flex-wrap: wrap; }
 .tk-route-name > span { overflow-wrap: anywhere; }
 .tk-route-name svg { width: 20px; color: #8b9d91; }
@@ -85,6 +106,7 @@
 .tk-level-high { color: #a25632; }
 .tk-level-unavailable { font-size: 9px; letter-spacing: 0; text-transform: none; }
 .tk-pagination { margin-top: 20px; display: flex; justify-content: space-between; gap: 12px; align-items: center; font-size: 11px; color: var(--tk-muted); }
+.tk-route-count { margin-top: 16px; color: var(--tk-muted); font-size: 10px; }
 .tk-pagination > div { display: flex; gap: 12px; }
 .tk-pagination button { display: flex; align-items: center; gap: 6px; min-height: 44px; padding: 8px; }
 .tk-fine-print, .tk-chart-note { color: var(--tk-muted); font-size: 10px; line-height: 1.9; margin-top: 18px; }
@@ -121,6 +143,8 @@
 .tk-route-loading { min-height: 180px; display: flex; align-items: center; justify-content: center; gap: 12px; font-size: 12px; color: var(--tk-muted); border: 1px dashed var(--tk-line); }
 .tk-loading-dot { animation: tk-pulse 1s ease-in-out infinite alternate; }
 .tk-page { padding-top: 20px; }
+.tk-explore-page { padding-top: 0; }
+.tk-explore-page > .tk-explorer { padding-top: 28px; }
 .tk-result-page { padding-top: 30px; }
 .tk-result-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 20px; padding-bottom: 30px; border-bottom: 1px solid var(--tk-line); }
 .tk-result-toolbar :is(a, button) { display: flex; align-items: center; gap: 8px; font-size: 11px; min-height: 32px; color: var(--tk-muted); }
@@ -193,7 +217,7 @@
 .tk-search-progress p { color: var(--tk-muted); font-size: 12px; margin-top: 14px; }
 .tk-progress-line { position: relative; margin: auto; width: min(240px, 75%); border-top: 1px dashed #91a58e; }
 .tk-progress-line svg { position: absolute; top: -11px; color: var(--tk-green); background: var(--tk-paper); animation: tk-flight 2.5s ease-in-out infinite; }
-.tk-trends-page { padding-block: 24px 64px; text-align: left; }
+.tk-trends-page { padding-block: 0 64px; text-align: left; }
 .tk-trends-page h1 { font-size: clamp(40px, 5vw, 64px); letter-spacing: -.055em; line-height: 1.2; margin-top: 20px; font-weight: 600; }
 .tk-trends-page > p:not(.tk-kicker) { font-size: 13px; color: var(--tk-muted); line-height: 1.9; margin-top: 24px; }
 .tk-trend-explainer { display: flex; align-items: center; gap: 14px; width: min(500px, 100%); margin: 60px auto 0; }
@@ -229,7 +253,7 @@
 .tk-heat-premium { background: #fa1749; }
 .tk-heat-empty { background: #edf1f3; color: #7f8b93; }
 .tk-elasticity-surface { overflow: hidden; }
-.tk-trends-page .tk-network-trend { margin-top: 0; }
+.tk-trends-page .tk-network-trend { margin-top: 0; padding-top: 28px; }
 .tk-elasticity-chart-section { text-align: left; border-top: 1px solid var(--tk-line); }
 .tk-elasticity-chart-section .tk-section-heading { margin-bottom: 20px; }
 .tk-elasticity-chart { height: 360px; }
@@ -242,37 +266,44 @@
 .tk-window-labels-only > div { padding-block: 22px; }
 .tk-window-labels-only span { color: var(--tk-ink); font: 12px 'JetBrains Mono', monospace; }
 .tk-demand-calendar-section { padding-top: 42px; }
-.tk-demand-calendar-layout { display: grid; grid-template-columns: minmax(0, 1.65fr) minmax(280px, .75fr); gap: 22px; align-items: stretch; }
-.tk-demand-calendar-card, .tk-calendar-insights { border: 1px solid var(--tk-line); border-radius: 8px; background: #fcfdf9; }
-.tk-calendar-toolbar { min-height: 62px; display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 12px 16px; border-bottom: 1px solid var(--tk-line); }
-.tk-calendar-toolbar > div { display: flex; align-items: center; gap: 9px; }
-.tk-calendar-toolbar strong { font: 650 16px/1.2 'Manrope', sans-serif; }
-.tk-calendar-toolbar button { min-height: 34px; display: inline-flex; align-items: center; justify-content: center; padding: 7px 10px; border: 1px solid var(--tk-line); border-radius: 4px; background: white; color: var(--tk-ink); font-size: 9px; }
+.tk-demand-calendar-layout { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(280px, .7fr); gap: 18px; align-items: stretch; }
+.tk-demand-calendar-card, .tk-calendar-insights { border: 1px solid #d9e2d8; border-radius: 14px; background: #fff; box-shadow: 0 16px 40px -34px rgba(25, 63, 50, .45); }
+.tk-demand-calendar-card { padding: 16px; }
+.tk-calendar-toolbar { min-height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 4px 2px 16px; }
+.tk-calendar-month { display: flex; align-items: center; gap: 11px; }
+.tk-calendar-month > span { width: 38px; height: 38px; display: inline-flex; align-items: center; justify-content: center; border-radius: 10px; background: #e5f0e7; color: var(--tk-green); }
+.tk-calendar-month > div { display: flex; flex-direction: column; gap: 3px; }
+.tk-calendar-month small { color: var(--tk-muted); font-size: 8px; text-transform: uppercase; letter-spacing: .1em; }
+.tk-calendar-toolbar strong { font: 650 17px/1.2 'Manrope', sans-serif; }
+.tk-calendar-actions { display: flex; align-items: center; gap: 6px; }
+.tk-calendar-toolbar button { min-height: 34px; display: inline-flex; align-items: center; justify-content: center; padding: 7px 11px; border: 1px solid #d9e2d8; border-radius: 8px; background: #f8faf7; color: var(--tk-ink); font-size: 9px; transition: background .15s, border-color .15s; }
+.tk-calendar-toolbar button:hover { background: #edf4ec; border-color: #bacdbd; }
 .tk-calendar-toolbar button:first-child, .tk-calendar-toolbar button:last-child { width: 34px; padding: 0; }
 .tk-calendar-weekdays, .tk-calendar-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); }
-.tk-calendar-weekdays { border-bottom: 1px solid var(--tk-line); background: #f1f4ed; }
-.tk-calendar-weekdays span { padding: 9px 5px; color: var(--tk-muted); font-size: 9px; font-weight: 650; text-align: center; text-transform: uppercase; letter-spacing: .08em; }
-.tk-calendar-day { position: relative; min-height: 82px; padding: 9px; border-right: 1px solid var(--tk-line); border-bottom: 1px solid var(--tk-line); background: white; overflow: hidden; }
-.tk-calendar-day:nth-child(7n) { border-right: 0; }
-.tk-calendar-day:nth-last-child(-n+7) { border-bottom: 0; }
+.tk-calendar-weekdays { margin-bottom: 6px; }
+.tk-calendar-weekdays span { padding: 8px 5px; color: #829089; font-size: 8px; font-weight: 700; text-align: center; text-transform: uppercase; letter-spacing: .11em; }
+.tk-calendar-grid { gap: 6px; }
+.tk-calendar-day { position: relative; min-height: 78px; padding: 8px; border: 1px solid #edf0eb; border-radius: 9px; background: #fafbf9; overflow: hidden; transition: transform .15s, border-color .15s, box-shadow .15s; }
+.tk-calendar-day:hover { z-index: 2; transform: translateY(-1px); border-color: #c7d6c9; box-shadow: 0 7px 16px -13px #1d4938; }
 .tk-calendar-day > span { display: inline-flex; align-items: center; justify-content: center; width: 25px; height: 25px; border-radius: 50%; font: 600 11px/1 'Inter', sans-serif; }
-.tk-calendar-day small { display: block; margin-top: 7px; color: #996220; font-size: 8px; font-weight: 650; line-height: 1.35; overflow-wrap: anywhere; }
-.tk-calendar-day b { position: absolute; right: 6px; bottom: 6px; padding: 3px 5px; border-radius: 3px; background: var(--tk-green); color: white; font-size: 7px; text-transform: uppercase; letter-spacing: .06em; }
-.tk-calendar-day.is-outside { opacity: .38; background: #f5f6f3; }
-.tk-calendar-day.is-weekend { background: #eef5f0; }
-.tk-calendar-day.is-holiday { box-shadow: inset 0 3px #e4a521; }
-.tk-calendar-day.is-selected { z-index: 1; outline: 2px solid var(--tk-green); outline-offset: -2px; background: #dfeee2; }
+.tk-calendar-day small { display: flex; align-items: flex-start; gap: 4px; margin-top: 6px; color: #8b6327; font-size: 8px; font-weight: 650; line-height: 1.3; overflow-wrap: anywhere; }
+.tk-calendar-day small i { width: 5px; height: 5px; margin-top: 3px; border-radius: 50%; background: #e4a521; flex-shrink: 0; }
+.tk-calendar-day b { position: absolute; right: 6px; bottom: 6px; padding: 4px 6px; border-radius: 10px; background: var(--tk-green); color: white; font-size: 7px; text-transform: uppercase; letter-spacing: .06em; }
+.tk-calendar-day.is-outside { opacity: .3; background: #f6f7f5; }
+.tk-calendar-day.is-weekend { border-color: #dce9df; background: #f0f7f1; }
+.tk-calendar-day.is-holiday { border-color: #edd9ae; background: #fffaf0; }
+.tk-calendar-day.is-selected { z-index: 1; border-color: #3b7d63; background: linear-gradient(145deg, #e5f3e7, #f7fbf5); box-shadow: inset 0 0 0 1px #3b7d63, 0 8px 20px -15px #174f3c; }
 .tk-calendar-day.is-selected > span { background: var(--tk-green); color: white; }
-.tk-calendar-legend { display: flex; align-items: center; flex-wrap: wrap; gap: 14px 22px; padding: 13px 16px; border-top: 1px solid var(--tk-line); color: var(--tk-muted); font-size: 9px; }
+.tk-calendar-legend { display: flex; align-items: center; flex-wrap: wrap; gap: 14px 22px; padding: 15px 2px 2px; color: var(--tk-muted); font-size: 9px; }
 .tk-calendar-legend span { display: inline-flex; align-items: center; gap: 6px; }
 .tk-calendar-legend i { width: 10px; height: 10px; border-radius: 2px; border: 1px solid var(--tk-line); }
 .tk-calendar-legend .is-travel { background: var(--tk-green); border-color: var(--tk-green); }
 .tk-calendar-legend .is-festival { background: #e4a521; border-color: #e4a521; }
 .tk-calendar-legend .is-weekend { background: #d9eadf; border-color: #c3d8ca; }
-.tk-calendar-insights { padding: 24px; background: #eff3e9; }
+.tk-calendar-insights { padding: 25px; background: linear-gradient(155deg, #eef4e9 0%, #f8faf4 100%); }
 .tk-calendar-insights h3 { margin-top: 7px; font: 650 21px/1.3 'Manrope', sans-serif; letter-spacing: -.035em; }
 .tk-calendar-insights > div { margin-top: 20px; }
-.tk-calendar-factor { display: flex; align-items: flex-start; gap: 10px; padding: 14px 0; border-top: 1px solid #d2ddce; color: var(--tk-green); }
+.tk-calendar-factor { display: flex; align-items: flex-start; gap: 11px; padding: 14px; margin-top: 9px; border: 1px solid #d5e1d2; border-radius: 10px; background: rgba(255, 255, 255, .68); color: var(--tk-green); }
 .tk-calendar-factor strong { color: var(--tk-ink); font-size: 12px; }
 .tk-calendar-factor p { margin-top: 5px; color: var(--tk-muted); font-size: 10px; line-height: 1.65; }
 .tk-calendar-factor-festival { color: #b1761b; }
@@ -282,6 +313,9 @@
 @keyframes tk-enter { from { opacity: .4; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes tk-pulse { from { opacity: .3; } to { opacity: 1; } }
 @keyframes tk-flight { from { left: 0; } to { left: calc(100% - 20px); } }
+@keyframes tk-journey-flight { 0%, 8% { left: 3%; transform: translateY(16px) rotate(9deg); } 50% { transform: translateY(-9px) rotate(10deg); } 92%, 100% { left: calc(97% - 34px); transform: translateY(16px) rotate(9deg); } }
+@keyframes tk-cloud-drift { from { transform: translateX(-7px); } to { transform: translateX(9px); } }
+@keyframes tk-runway-light { from { opacity: .25; } to { opacity: 1; } }
 @media (max-width: 1100px) {
   .tk-container { width: calc(100% - 64px); } .tk-nav-inner { padding-inline: 32px; gap: 28px; } .tk-nav-links { gap: 20px; }
   .tk-intelligence-link { padding-left: 20px; } .tk-search-field { padding-inline: 12px; } .tk-search .tk-button { padding-inline: 18px; gap: 10px; }
@@ -294,9 +328,10 @@
   .tk-nav-links { order: 4; margin: 0; display: none; width: 100%; padding-top: 14px; border-top: 1px solid var(--tk-line); }
   .tk-nav-links.is-open { display: flex; } .tk-intelligence-link { margin-left: auto; border: 0; padding-left: 0; font-size: 11px; gap: 8px; }
   .tk-menu { display: flex; justify-content: center; align-items: center; width: 40px; height: 40px; border: 1px solid var(--tk-line); border-radius: 4px; }
-  .tk-hero { padding-top: 40px; padding-bottom: 40px; } .tk-hero h1 { font-size: 56px; } .tk-hero-copy { font-size: 14px; }
+  .tk-hero { padding-top: 22px; padding-bottom: 40px; } .tk-hero h1 { font-size: 56px; } .tk-hero-copy { font-size: 14px; }
   .tk-search { grid-template-columns: 1fr 38px 1fr; row-gap: 14px; } .tk-date-field { grid-column: 1 / 3; border-left: 0; border-top: 1px solid var(--tk-line); padding-top: 14px; }
   .tk-search .tk-button { margin-top: 10px; } .tk-how { grid-template-columns: 1fr 1fr; gap: 34px; } .tk-how-item:nth-child(3) { border-left: 0; padding-left: 0; }
+  .tk-flight-journey { grid-template-columns: 1fr; } .tk-flight-journey-copy { padding: 28px; } .tk-flight-scene { border-left: 0; border-top: 1px solid #d6e0d5; }
   .tk-route-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .tk-explore-controls { grid-template-columns: 1fr 1fr; }
   .tk-result-top { grid-template-columns: 1fr; gap: 18px; } .tk-price-context { max-width: none; } .tk-big-fare { font-size: 48px; }
   .tk-demand-calendar-layout { grid-template-columns: 1fr; } .tk-calendar-insights { padding: 20px; }
@@ -308,7 +343,7 @@
   .tk-container { width: calc(100% - 40px); } .tk-nav-inner { padding: 16px 20px; gap: 12px; }
   .tk-brand { font-size: 25px; } .tk-brand-mark { margin-right: 6px; } .tk-intelligence-link { font-size: 10px; gap: 4px; } .tk-intelligence-link span { max-width: 86px; line-height: 1.5; }
   .tk-nav-links { justify-content: space-between; gap: 14px; font-size: 12px; } .tk-nav-links a { padding-block: 14px; }
-  .tk-hero { padding-top: 30px; } .tk-hero-path { margin-bottom: 20px; } .tk-kicker { font-size: 9px; }
+  .tk-hero { padding-top: 20px; } .tk-hero-path { margin-bottom: 20px; } .tk-kicker { font-size: 9px; }
   .tk-hero h1 { font-size: clamp(41px, 11.2vw, 58px); line-height: 1.15; margin: 18px 0; } .tk-hero h1 em { display: block; }
   .tk-hero-copy { font-size: 12px; max-width: 270px; margin: auto; } .tk-search-area { margin-top: 28px; }
   .tk-search { padding: 12px; grid-template-columns: minmax(0, 1fr) 30px minmax(0, 1fr); row-gap: 4px; }
@@ -319,6 +354,7 @@
   .tk-hero-footnote { font-size: 9px; line-height: 1.8; max-width: 250px; margin: 23px auto 0; } .tk-hero-footnote .tk-status-dot { flex-shrink: 0; }
   .tk-how { grid-template-columns: 1fr; gap: 25px; padding-block: 32px; } .tk-how h2 br { display: none; } .tk-how h2 { font-size: 23px; }
   .tk-how-item, .tk-how-item:nth-child(3) { border: 0; padding: 0; } .tk-how h3 { margin-top: 8px; } .tk-how-item p { font-size: 11px; }
+  .tk-flight-journey { margin: 32px 0; } .tk-flight-journey-copy { padding: 24px; } .tk-flight-scene { min-height: 230px; } .tk-scene-airport { bottom: 48px; min-width: 72px; } .tk-scene-origin { left: 2%; } .tk-scene-destination { right: 2%; }
   .tk-section { padding-block: 40px; } .tk-section-heading { flex-direction: column; gap: 16px; margin-bottom: 22px; } .tk-section-heading h2 { font-size: 28px; }
   .tk-explore-compact { grid-template-columns: 1fr; gap: 12px; } .tk-explore-compact p { font-size: 10px; } .tk-explore-compact p br { display: none; }
   .tk-explore-controls input, .tk-explore-controls select { font-size: 16px; } .tk-explore-controls label > span { font-size: 10px; }
