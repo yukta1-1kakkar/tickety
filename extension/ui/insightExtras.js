@@ -10,11 +10,22 @@
     const event=data.eventContext?.event;
     const days=distance(data.departureDate,today());
     const delta=data.differenceFromRange;
+    const rangePosition=Number.isFinite(delta)
+      ? delta===0?'Within typical range':`${money(Math.abs(delta))} ${delta<0?'below':'above'}`
+      : data.priceLevel==='TYPICAL'?'Within typical range'
+      : data.priceLevel==='LOW'?'Below typical range'
+      : data.priceLevel==='HIGH'?'Above typical range'
+      :'Range not available';
+    const rangeDetail=Number.isFinite(delta)
+      ? 'Difference from the closest range boundary'
+      : data.classificationBasis==='google_flights_stored_search'
+        ? 'Google Flights stored-search classification'
+        : 'A typical range was not observed for this fare';
     const tiles=[
       ['Fare level',data.priceLevel?`${data.priceLevel} FARE`:'Unavailable',data.priceLevel?.toLowerCase()||'muted',data.classificationBasis==='google_flights_stored_search'?'Google Flights stored-search classification':'Compared with the observed typical range'],
       [event?.travelOffset>0?'Recent event':'Approaching event',event?event.name:data.eventContext?.coverageAvailable?'None nearby':'Calendar unavailable',event?'event':'muted',event?offsetText(event.travelOffset,event.name):'Calendar context, not a demand forecast'],
       ['Booking window',Number.isFinite(days)?days<0?'Past travel date':`${days} days ahead`:'Unavailable','info','Time until your selected departure'],
-      ['Typical-range gap',Number.isFinite(delta)?delta===0?'Within range':`${money(Math.abs(delta))} ${delta<0?'below':'above'}`:'Unavailable',delta<0?'low':delta>0?'high':'info','Difference from the closest range boundary'],
+      ['Typical-range position',rangePosition,delta<0||data.priceLevel==='LOW'?'low':delta>0||data.priceLevel==='HIGH'?'high':'info',rangeDetail],
     ];
     for(const [title,value,tone,detail] of tiles) {const tile=el('div',null,'tk-kpi');tile.dataset.tone=tone;tile.append(el('span',title),el('strong',value),el('small',detail));grid.append(tile);}
     return grid;

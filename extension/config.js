@@ -4,7 +4,7 @@ Tickety.config = Object.freeze({
     local: { api: 'http://127.0.0.1:8000/api', web: 'http://localhost:5173' },
     production: { api: 'https://vayusetu-serpapi.onrender.com/api', web: 'https://tickety-airfare.vercel.app' },
   },
-  defaultEnvironment: 'local',
+  defaultEnvironment: 'production',
   cacheMs: 5 * 60 * 1000,
-  timeoutMs: 20000,
+  timeoutMs: 60 * 1000,
 });
