@@ -27,7 +27,10 @@ async function mockApi(page: Page) {
   await page.route('**/api/**', async route => {
     const path = new URL(route.request().url()).pathname;
     const payload = path.endsWith('/routes') ? { total: routes.length, routes }
-      : path.endsWith('/fares/coverage') ? { registeredRoutes: 3, observedRoutes: 2, observations: 5, observedWindows: [60, 30, 7], updatedAt: fare.collected_at }
+      : path.endsWith('/fares/coverage') ? { registeredRoutes: 3, observedRoutes: 2, observations: 5, observedWindows: [60, 30, 7], ticketWindowRuns: [
+          { observationDate: '2026-10-04', windows: [{days:30,travelDate:'2026-11-03'},{days:60,travelDate:'2026-12-03'}] },
+          { observationDate: '2026-09-13', windows: [{days:60,travelDate:'2026-11-12'}] },
+        ], updatedAt: fare.collected_at }
       : path.endsWith('/fares/compare') ? { fares: [fare, { ...second, route_id: 'DEL-BLR', price_level: 'Typical' }] }
       : path.endsWith('/fares') ? intelligence : { hasData: false };
     await route.fulfill({ json: payload });
@@ -47,17 +50,35 @@ async function noOverflow(page: Page) {
 test('Tickety plane branding and three-day Diwali travel window', async ({ page }) => {
   await mockApi(page);
   await page.goto('/fare?route=DEL-BOM&date=2026-11-06');
-  await expect(page).toHaveTitle('Tickety — Know your fare before you book.');
+  await expect(page).toHaveTitle('Tickety – Know your fare before you book.');
   await expect(page.locator('.tk-nav .tk-brand')).toHaveText('tickety.');
   await expect(page.locator('.tk-nav img')).toHaveAttribute('src','/tickety-plane.svg');
   const calendar=page.getByRole('region',{name:'Fare pressure calendar'});
   await expect(calendar.locator('.tk-calendar-day.is-before-event').filter({hasText:'Diwali'})).toHaveCount(3);
   await expect(calendar.locator('.tk-calendar-day.is-after-event').filter({hasText:'Diwali'})).toHaveCount(3);
   await expect(calendar.locator('.is-selected')).toContainText('2d before Diwali');
+  await expect(calendar.getByText('T+ marks a ticket window confirmed by stored scraper data.')).toBeVisible();
+  await expect(calendar.locator('.tk-calendar-window')).toHaveCount(3);
+  await expect(calendar.getByRole('button', { name: /12 November 2026, T\+60 ticket window from scraper run 13 September 2026/ })).toBeVisible();
+  await expect(calendar.getByRole('button', { name: /7 November 2026/ })).not.toContainText('T+');
+  await calendar.getByRole('button', { name: /7 November 2026/ }).click();
+  await expect(page).toHaveURL(/\/fare\?route=DEL-BOM&date=2026-11-06/);
+  await expect(calendar.getByRole('heading', { name: '7 November 2026' })).toBeVisible();
+  await expect(calendar.locator('.tk-calendar-fare-preview')).toContainText('₹5,240');
   await noOverflow(page);
 });
 
-test('home to fare, actual context, missing windows, flight sorting and responsive layout', async ({ page }, info) => {
+test('2027 calendar shows events and their three-day travel windows', async ({ page }) => {
+  await mockApi(page);
+  await page.goto('/fare?route=DEL-BOM&date=2027-10-27');
+  const calendar=page.getByRole('region',{name:'Fare pressure calendar'});
+  await expect(calendar.locator('.tk-calendar-day.is-holiday').filter({hasText:'Diwali'})).toHaveCount(1);
+  await expect(calendar.locator('.tk-calendar-day.is-before-event').filter({hasText:'Diwali'})).toHaveCount(3);
+  await expect(calendar.locator('.tk-calendar-day.is-after-event').filter({hasText:'Diwali'})).toHaveCount(3);
+  await expect(calendar.locator('.is-selected')).toContainText('2d before Diwali');
+});
+
+test('home to fare, calendar preview, flight sorting and responsive layout', async ({ page }, info) => {
   const errors: string[] = [];
   page.on('pageerror', error => errors.push(error.message));
   page.on('console', message => { if (message.type() === 'error') errors.push(message.text()); });
@@ -73,8 +94,8 @@ test('home to fare, actual context, missing windows, flight sorting and responsi
   await expect(page).toHaveURL(/\/fare\?route=DEL-BOM&date=2026-10-15/);
   await expect(page.locator('.tk-big-fare')).toHaveText('₹5,240');
   await expect(page.getByText('Your fare is ₹460 below the typical range.')).toBeVisible();
-  await expect(page.locator('.tk-window-values > div')).toHaveCount(5);
-  await expect(page.locator('.tk-window-values').getByText('Not observed')).toHaveCount(2);
+  await expect(page.getByRole('heading', { name: 'How this route’s fares change.' })).toHaveCount(0);
+  await expect(page.locator('.tk-calendar-fare-preview')).toContainText('₹5,240');
   await page.getByLabel('Sort flights').selectOption('duration');
   await expect(page.locator('.tk-flight-card').first()).toContainText('Second Fixture Air');
   await page.getByLabel('Sort flights').selectOption('stops');
@@ -130,15 +151,16 @@ test('loading, API error retry, empty results and missing insights', async ({ pa
   await page.route('**/api/fares?*', route => route.fulfill({ json: { ...intelligence, current: { ...fare, price_level: null, typical_price_low: null, typical_price_high: null, lowest_price: null }, flights: [], leadTime: intelligence.leadTime.map(point => ({ ...point, fare: null, count: 0 })) } }));
   await page.reload();
   await expect(page.getByText('Price insight unavailable.', { exact: true })).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'No lead-time observations yet.' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Choose a travel date and check its fare' })).toBeVisible();
   await noOverflow(page);
 });
 
 test('government boundary, login redirect, original aliases and return to Tickety', async ({ page }) => {
   await mockApi(page);
   await page.goto('/');
-  await page.getByRole('link', { name: 'VayuSetu Intelligence', exact: true }).click();
-  await expect(page).toHaveURL('/login');
+  await expect(page.getByRole('link', { name: 'VayuSetu Intelligence', exact: true })).toHaveCount(0);
+  await expect(page.getByRole('link', { name: 'Explore VayuSetu Intelligence', exact: true })).toHaveCount(0);
+  await page.goto('/login');
   await page.getByLabel('Email').fill('admin@vayusetu.gov.in');
   await page.getByLabel('Password', { exact: true }).fill('ADMIN@123');
   await page.getByRole('button', { name: 'Login to VAYUSETU' }).click();

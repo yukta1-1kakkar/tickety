@@ -2,7 +2,7 @@
 .tk-root { font: 13px/1.55 'Inter', 'Segoe UI', sans-serif; color: #203831; color-scheme: light; text-align:left; }
 .tk-root * { box-sizing:border-box; }
 .tk-floating { position:fixed; right:20px; bottom:20px; z-index:2147483647; max-width:calc(100vw - 24px); }
-.tk-card { width:340px; max-width:100%; max-height:calc(100vh - 48px); overflow:auto; padding:22px; border:1px solid #dce2da; border-radius:14px; background:#f8f9f4; box-shadow:0 10px 35px #20383126; animation:tk-enter .18s ease-out; }
+.tk-card { width:420px; max-width:100%; max-height:calc(100vh - 48px); overflow:auto; padding:22px; border:1px solid #dce2da; border-radius:14px; background:#f8f9f4; box-shadow:0 10px 35px #20383126; animation:tk-enter .18s ease-out; }
 .tk-root button,.tk-root input,.tk-root select,.tk-root a { font:inherit; }
 .tk-root button,.tk-root a { touch-action:manipulation; }
 .tk-root button { cursor:pointer; border:1px solid #dce2da; border-radius:7px; background:white; padding:9px 12px; color:#203831; transition:background .15s,transform .15s; }
@@ -35,14 +35,28 @@
 .tk-kpi[data-tone=high] { background:#fbeaea; border-color:#ebcbcb; color:#934545; }
 .tk-kpi[data-tone=event] { background:#fff2de; border-color:#ebd7b6; color:#855e21; }
 .tk-root h3 { font-size:13px; margin:0 0 8px; }
-.tk-event-section,.tk-booking-note { border-top:1px solid #dce2da; padding-top:16px; margin-top:16px; }
-.tk-event-strip { display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:3px; }
-.tk-event-day { display:flex; flex-direction:column; gap:4px; padding:8px 2px; text-align:center; font-size:9px; text-decoration:none; border:1px solid #ddd; border-radius:5px; color:#203831; }
-.tk-event-day small { font-size:8px; overflow-wrap:anywhere; }
-.tk-event-day[data-phase=before] { background:#fff0db; border-color:#ebd7b6; }
-.tk-event-day[data-phase=event] { background:#eee5f7; border-color:#d9c8eb; }
-.tk-event-day[data-phase=after] { background:#e6f0f9; border-color:#cdddec; }
-.tk-event-day[aria-current=date] { outline:2px solid #226653; outline-offset:1px; }
+.tk-event-section { border:1px solid #dce2da; border-radius:12px; padding:14px; margin-top:16px; background:#fff; box-shadow:0 4px 14px #2038310d; }
+.tk-booking-note { border-top:1px solid #dce2da; padding-top:16px; margin-top:16px; }
+.tk-event-heading { display:flex; align-items:center; justify-content:space-between; gap:10px; }
+.tk-event-heading h3 { margin:0; font-size:14px; }
+.tk-event-heading > span { flex:none; padding:3px 7px; border-radius:999px; background:#edf3ef; color:#226653; font-size:9px; font-weight:700; letter-spacing:.03em; text-transform:uppercase; }
+.tk-event-guidance { margin:7px 0 12px!important; color:#43564d; font-size:11px; line-height:1.45; }
+.tk-event-strip { display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:4px; width:100%; }
+.tk-event-day { min-width:0; min-height:82px; display:flex; flex-direction:column; align-items:center; justify-content:space-between; gap:5px; padding:8px 2px 7px; text-align:center; text-decoration:none; border:1px solid #dce2da; border-radius:8px; color:#203831; transition:border-color .15s,box-shadow .15s,transform .15s; }
+.tk-event-day:hover { border-color:#8ca69a; box-shadow:0 3px 9px #20383114; transform:translateY(-1px); }
+.tk-event-day strong { font-size:10px; line-height:1.2; }
+.tk-event-day time { white-space:nowrap; font-size:9px; color:#45574f; }
+.tk-event-day small { min-height:14px; white-space:nowrap; font-size:8px; font-weight:600; line-height:1.3; color:#34483f; }
+.tk-event-day[data-fare=unavailable] small { color:#9aa59f; font-size:13px; font-weight:400; }
+.tk-event-day[data-phase=before] { background:#fff8ec; border-color:#ead8b9; }
+.tk-event-day[data-phase=event] { background:#f4eef9; border-color:#d8c6e8; }
+.tk-event-day[data-phase=after] { background:#eef6fb; border-color:#cbddea; }
+.tk-event-day[aria-current=date] { border-color:#226653; box-shadow:0 0 0 2px #226653; }
+.tk-event-legend { display:flex; flex-wrap:wrap; align-items:center; gap:5px 10px; margin:9px 0 0!important; color:#68756e; font-size:9px; }
+.tk-event-legend span[data-phase]::before { content:''; display:inline-block; width:7px; height:7px; margin-right:4px; border-radius:50%; vertical-align:0; }
+.tk-event-legend span[data-phase=before]::before { background:#deb86f; }
+.tk-event-legend span[data-phase=event]::before { background:#a786c2; }
+.tk-event-legend span[data-phase=after]::before { background:#79a9ca; }
 .tk-calendar-source { font-size:10px; color:#226653; }
 .tk-alert-setup { border-top:1px solid #dce2da; margin-top:16px; }
 .tk-alert-row { border:1px solid #dce2da; border-radius:8px; padding:10px; margin:8px 0; }

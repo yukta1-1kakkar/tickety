@@ -29,7 +29,9 @@ export type Intelligence = {
 };
 export type Coverage = {
   registeredRoutes: number; observedRoutes: number; observations: number;
-  observedWindows: number[]; updatedAt: string | null;
+  observedWindows: number[];
+  ticketWindowRuns: { observationDate: string; windows: { days: number; travelDate: string }[] }[];
+  updatedAt: string | null;
 };
 export type Resource<T> = { data?: T; loading: boolean; error: boolean; retry: () => void };
 

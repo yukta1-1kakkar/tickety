@@ -83,6 +83,7 @@ def test_calendar_coverage_and_three_days_after_event(fares_client):
     client,_=fares_client
     after=client.get('/api/tickety/insights',params={**PARAMS,'departureDate':'2026-11-11'}).json()['eventContext']
     assert after['event']['travelOffset']==3
-    missing=client.get('/api/tickety/insights',params={**PARAMS,'departureDate':'2027-11-01'}).json()['eventContext']
-    assert missing['coverageAvailable'] is False
-    assert missing['event'] is None
+    next_year=client.get('/api/tickety/insights',params={**PARAMS,'departureDate':'2027-11-01'}).json()['eventContext']
+    assert next_year['coverageAvailable'] is True
+    assert next_year['event']=={'name':'Diwali','date':'2027-10-29','travelOffset':3}
+    assert next_year['sourceUrl']=='https://www.india.gov.in/calendar?date=2027'

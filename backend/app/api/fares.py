@@ -53,12 +53,22 @@ def fare_coverage(db: Session = Depends(get_db)):
     windows = eligible(db).filter(Fare.advance_purchase_days.in_(WINDOWS)).with_entities(
         Fare.advance_purchase_days,
     ).distinct().all()
+    run_rows = eligible(db).filter(Fare.advance_purchase_days.in_(WINDOWS)).with_entities(
+        Fare.observation_date, Fare.advance_purchase_days, Fare.travel_date,
+    ).distinct().order_by(Fare.observation_date.desc(), Fare.advance_purchase_days.desc()).all()
+    runs = {}
+    for observation_date, days, travel_date in run_rows:
+        runs.setdefault(observation_date, []).append({"days": days, "travelDate": travel_date})
     return {
         "registeredRoutes": db.query(func.count(RouteWeight.id)).filter(
             RouteWeight.route_id.in_(ALLOWED_ROUTE_IDS)
         ).scalar(),
         "observedRoutes": observed_routes, "observations": observations,
         "observedWindows": sorted((row[0] for row in windows), reverse=True),
+        "ticketWindowRuns": [
+            {"observationDate": observation_date, "windows": run_windows}
+            for observation_date, run_windows in runs.items()
+        ],
         "updatedAt": updated_at,
     }
 

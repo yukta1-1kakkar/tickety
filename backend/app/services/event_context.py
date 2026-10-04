@@ -17,7 +17,8 @@ def event_context(db, departure, aliases):
     data = calendar()
     candidates = [(date.fromisoformat(day), event) for day, event in data['events'].items()
                   if -3 <= (date.fromisoformat(day) - departure).days <= 45]
-    base = {'coverageAvailable': departure.year in data['coverageYears'], 'sourceUrl': data['sourceUrl'], 'event': None, 'days': []}
+    source_url = data.get('sourceUrls', {}).get(str(departure.year), data.get('sourceUrl'))
+    base = {'coverageAvailable': departure.year in data['coverageYears'], 'sourceUrl': source_url, 'event': None, 'days': []}
     if not candidates:
         return base
     event_day, event = min(candidates, key=lambda pair: abs((pair[0] - departure).days))

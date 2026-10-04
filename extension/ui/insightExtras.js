@@ -4,6 +4,7 @@
   const today=()=>new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Kolkata',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
   const distance=(a,b)=>Math.round((Date.parse(a)-Date.parse(b))/86400000);
   const offsetText=(offset,name)=>offset===0?`${name} day`:`${Math.abs(offset)} day${Math.abs(offset)===1?'':'s'} ${offset<0?'before':'after'} ${name}`;
+  const shortDate=date=>new Intl.DateTimeFormat('en-IN',{day:'2-digit',month:'short',timeZone:'UTC'}).format(new Date(`${date}T00:00:00Z`));
   function grid(data) {
     const grid=el('div',null,'tk-kpis');grid.setAttribute('aria-label','Fare indicators');
     const event=data.eventContext?.event;
@@ -22,23 +23,30 @@
     const calendar=data.eventContext, event=calendar?.event;
     if(event) {
       const section=el('section',null,'tk-event-section');section.setAttribute('aria-label','Event travel window');
-      section.append(el('h3',`${event.name} · ${event.date}`),el('p','Compare departures three days before and after the event.','tk-muted'));
+      const heading=el('div',null,'tk-event-heading');
+      heading.append(el('h3',event.name),el('span','7-day fare window'));
+      section.append(heading,el('p',`Fares may fluctuate from 3 days before to 3 days after ${event.name}. Compare the full window before booking.`,'tk-event-guidance'));
       const strip=el('div',null,'tk-event-strip');
       for(const day of calendar.days || []) {
         const cell=el('a',null,'tk-event-day');cell.dataset.phase=day.phase;
+        const hasFare=positive(day.fare);cell.dataset.fare=hasFare?'available':'unavailable';
         const url=new URL(data.webUrl);url.searchParams.set('date',day.date);cell.href=url.href;cell.target='_blank';cell.rel='noopener noreferrer';
-        cell.setAttribute('aria-label',`${day.date}, ${offsetText(day.offset,event.name)}, ${money(day.fare)}`);
+        cell.setAttribute('aria-label',`${day.date}, ${offsetText(day.offset,event.name)}, ${hasFare?money(day.fare):'fare not observed'}`);
         if(day.date===data.departureDate)cell.setAttribute('aria-current','date');
-        cell.append(el('strong',day.offset===0?'Event':`${day.offset>0?'+':''}${day.offset}d`),el('span',day.date.slice(5)),el('small',positive(day.fare)?money(day.fare):'No fare'));
+        const dateLabel=el('time',shortDate(day.date));dateLabel.dateTime=day.date;
+        cell.append(el('strong',day.offset===0?'Event':`${day.offset>0?'+':''}${day.offset}d`),dateLabel,el('small',hasFare?money(day.fare):'—'));
         strip.append(cell);
       }
-      section.append(strip,el('p','Amber: before · Purple: event · Blue: after. Colours mark calendar position, not expected prices.','tk-muted'));
+      const legend=el('p',null,'tk-event-legend');
+      for(const [phase,label] of [['before','Before'],['event','Event'],['after','After']]) {const item=el('span',label);item.dataset.phase=phase;legend.append(item);}
+      legend.append(el('span','— Fare unavailable'));
+      section.append(strip,legend);
       const observed=(calendar.days||[]).filter(d=>positive(d.fare));
       if(observed.length>=2) {
         const best=observed.reduce((a,b)=>a.fare<=b.fare?a:b);
         section.append(el('p',`Lowest stored fare in this event window: ${money(best.fare)}, ${offsetText(best.offset,event.name)}. These are departure dates, not recommended purchase dates.`, 'tk-muted'));
-      } else section.append(el('p',`Not enough observations to say whether travelling before or after ${event.name} costs less.`, 'tk-muted'));
-      const source=el('a','Calendar source ↗','tk-calendar-source');source.href='https://nhai.gov.in/assets/pdf/List_of_holidays-2026.pdf';source.target='_blank';source.rel='noopener noreferrer';section.append(source);
+      }
+      const source=el('a','Calendar source ↗','tk-calendar-source');source.href=calendar.sourceUrl||'https://www.india.gov.in/calendar';source.target='_blank';source.rel='noopener noreferrer';section.append(source);
       body.append(section);
     }
     const windows=(data.leadTime||[]).filter(p=>positive(p.fare));
@@ -46,7 +54,7 @@
     if(windows.length>=2) {
       const best=windows.reduce((a,b)=>a.fare<=b.fare?a:b);
       note.append(el('p',`For this departure, the lowest observed booking-window fare was ${money(best.fare)} at ${best.days} days ahead. Itineraries and observation times may differ; this does not predict the cheapest future booking date.`,'tk-muted'));
-    } else note.append(el('p','There is not enough history to recommend a specific number of days before departure or an event to buy. Compare available dates and set a target-fare alert.','tk-muted'));
+    }
     note.append(el('p','Off-hours tip: try comparing fares during quieter hours too. Booking at night is not guaranteed to be cheaper; this dataset does not establish a cheapest hour.','tk-muted'));
     body.append(note);
   }

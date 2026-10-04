@@ -110,7 +110,7 @@ def test_coverage_excludes_routes_outside_configured_basket(fares_client):
     db.add(RouteWeight(route_id="BOM-DEL", origin="Mumbai", destination="Delhi", weight=0))
     db.commit()
     empty = client.get("/api/fares/coverage").json()
-    assert empty == {"registeredRoutes": 1, "observedRoutes": 0, "observations": 0, "observedWindows": [], "updatedAt": None}
+    assert empty == {"registeredRoutes": 1, "observedRoutes": 0, "observations": 0, "observedWindows": [], "ticketWindowRuns": [], "updatedAt": None}
     add_fare(db, days=60)
     add_fare(db, days=7)
     add_fare(db, days=1, is_synthetic=True)
@@ -119,6 +119,10 @@ def test_coverage_excludes_routes_outside_configured_basket(fares_client):
     assert covered["observedRoutes"] == 1
     assert covered["observations"] == 2
     assert covered["observedWindows"] == [60, 7]
+    assert covered["ticketWindowRuns"] == [
+        {"observationDate": "2026-10-08", "windows": [{"days": 7, "travelDate": "2026-10-15"}]},
+        {"observationDate": "2026-08-16", "windows": [{"days": 60, "travelDate": "2026-10-15"}]},
+    ]
     assert covered["updatedAt"].startswith("2026-10-08")
 
 

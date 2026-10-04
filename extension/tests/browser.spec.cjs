@@ -59,8 +59,10 @@ test('Google DOM fixture: isolated bubble, expand, insight, deep link, collapse 
   expect(await worker.evaluate(()=>globalThis.testRequestUrl)).toContain('currentFare=5240');
   await expect(popup.getByText('₹460 below the observed typical range.')).toBeVisible();
   await expect(popup.getByRole('link',{name:'View full Tickety analysis'})).toHaveAttribute('href',/\/fare\?route=DELHI-MUMBAI&date=2026-10-15/);
-  await popup.getByText('How fares change',{exact:true}).click();
-  await expect(popup.getByRole('img')).toHaveAttribute('aria-label',/30 days: Unavailable/);
+  await expect(popup.getByText('Google Flights classification from the stored search.')).toHaveCount(0);
+  await expect(popup.getByText('One-way · Economy · One adult · City-pair context')).toHaveCount(0);
+  await expect(popup.getByText('Google Flights via SerpAPI.',{exact:false})).toHaveCount(0);
+  await expect(popup.getByText('How fares change',{exact:true})).toHaveCount(0);
   await popup.screenshot({path:path.join(__dirname,'../test-results/insight.png'),fullPage:true});
   await page.getByRole('button',{name:'Collapse Tickety'}).click();
   await expect(page.locator('.tk-card')).toHaveCount(0);
@@ -82,6 +84,7 @@ test('manual entry, unsupported route, no-data and retry states',async()=>{
   await expect(popup.getByText("Price insight isn't available for this route and date yet.")).toBeVisible();
   await expect(popup.locator('.tk-fare')).toHaveText('Unavailable');
   await expect(popup.locator('.tk-mascot')).toHaveAttribute('data-state','unavailable');
+  await expect(popup.getByText('There is not enough history to recommend',{exact:false})).toHaveCount(0);
   await popup.close();
 });
 
@@ -134,6 +137,11 @@ test('Diwali KPI window and route-alert save, check and remove',async()=>{
   await expect(popup.locator('.tk-event-day[data-phase=before]')).toHaveCount(3);
   await expect(popup.locator('.tk-event-day[data-phase=after]')).toHaveCount(3);
   await expect(popup.locator('.tk-event-day[aria-current=date]')).toHaveAttribute('href',/date=2026-11-06/);
+  await expect(popup.getByText('Fares may fluctuate from 3 days before to 3 days after Diwali.')).toBeVisible();
+  await expect(popup.locator('.tk-event-day[data-fare=unavailable]')).toHaveCount(6);
+  await expect(popup.getByText('No fare',{exact:true})).toHaveCount(0);
+  expect(await popup.locator('.tk-event-strip').evaluate(node=>node.scrollWidth<=node.clientWidth)).toBe(true);
+  expect(await popup.locator('.tk-event-day').evaluateAll(nodes=>new Set(nodes.map(node=>node.getBoundingClientRect().top)).size)).toBe(1);
   await popup.screenshot({path:path.join(__dirname,'../test-results/event-insights.png'),fullPage:true});
   await popup.getByText('Set a route fare alert',{exact:true}).click();
   await popup.getByLabel('Notify when the stored fare is at or below (INR)').fill('5500');

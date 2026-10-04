@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
-import { ArrowLeft, ArrowRight, ArrowUpRight, ChartNoAxesCombined, Layers3, Menu, Plane, X } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ChartNoAxesCombined, Layers3, Menu, Plane, X } from 'lucide-react';
 import { Link, Navigate, NavLink, Outlet, useLocation, useOutletContext, useSearchParams } from 'react-router-dom';
 import { FareCard, FlightComparison, FlightJourneyVisual, PriceContext, SearchProgress, State } from '../components/tickety/FareComponents';
 import { FarePressureCalendar } from '../components/tickety/FarePressureCalendar';
 import { FareSearch } from '../components/tickety/FareSearch';
 import { LeadTimeElasticityChart, NetworkLeadTimeTrend } from '../components/tickety/LeadTimeChart';
 import { RouteExplorer } from '../components/tickety/RouteExplorer';
-import { dateLabel, routeLabel, timestampLabel, useApi, useRouteCatalog, validDate, type Catalog, type Coverage, type Intelligence, type Resource } from '../components/tickety/data';
+import { timestampLabel, useApi, useRouteCatalog, validDate, type Catalog, type Coverage, type Intelligence, type Resource } from '../components/tickety/data';
 import './TicketyPage.css';
 
 type TicketyContext = { catalog: Resource<Catalog> };
@@ -19,7 +19,6 @@ function ConsumerNav() {
   const [open, setOpen] = useState(false);
   return <header className="tk-nav"><div className="tk-nav-inner"><Link to="/" aria-label="Tickety home"><TicketyMark /></Link>
     <nav className={open ? 'tk-nav-links is-open' : 'tk-nav-links'} aria-label="Main navigation"><NavLink to="/" end>Check Fare</NavLink><NavLink to="/explore">Explore Routes</NavLink><NavLink to="/trends">Price Trends</NavLink></nav>
-    <Link className="tk-intelligence-link" to="/vayusetu"><span>VayuSetu Intelligence</span><ArrowUpRight size={16} /></Link>
     <button className="tk-menu" onClick={() => setOpen(!open)} aria-label={open ? 'Close navigation' : 'Open navigation'} aria-expanded={open}>{open ? <X size={21} /> : <Menu size={21} />}</button>
   </div></header>;
 }
@@ -27,10 +26,10 @@ function ConsumerNav() {
 export function TicketyLayout() {
   const catalog = useRouteCatalog();
   const location = useLocation();
-  useEffect(() => { document.title = 'Tickety — Know your fare before you book.'; }, []);
+  useEffect(() => { document.title = 'Tickety – Know your fare before you book.'; }, []);
   return <div className="tickety"><a className="tk-skip" href="#main-content">Skip to content</a><ConsumerNav key={location.pathname} />
     <main id="main-content"><Outlet context={{ catalog } satisfies TicketyContext} /></main>
-    <section className="tk-engine"><div className="tk-container tk-engine-inner"><div><p className="tk-kicker">Powered by VayuSetu</p><h2>Want to see<br />the bigger picture?</h2><p>Tickety helps you understand your fare.<br />VayuSetu helps policymakers understand India’s airfare.</p><Link to="/vayusetu">Explore VayuSetu Intelligence <ArrowUpRight size={18} /></Link></div>
+    <section className="tk-engine"><div className="tk-container tk-engine-inner"><div><p className="tk-kicker">Powered by VayuSetu</p><h2>Want to see<br />the bigger picture?</h2><p>Tickety helps you understand your fare.<br />VayuSetu helps policymakers understand India’s airfare.</p></div>
       <div className="tk-engine-index" aria-label="VayuSetu intelligence capabilities"><span><ChartNoAxesCombined size={18} /> Airfare index & historical trends</span><span><Layers3 size={18} /> Route analytics & sector heatmaps</span><span><Plane size={18} /> Lead-time analysis & data coverage</span><p>The intelligence engine behind your fare picture.</p></div>
     </div></section>
     <footer className="tk-footer tk-container"><Link to="/" aria-label="Tickety home"><TicketyMark /></Link><p>Know your fare before you book.</p><span>Google Flights data via SerpAPI</span></footer>
@@ -76,9 +75,9 @@ function FareResult({ route, date }: { route: string; date: string }) {
     {edit && <FareSearch catalog={catalog} initialRoute={route} initialDate={date} />}
     {resource.loading ? <SearchProgress /> : resource.error ? <State error title="We couldn’t build your fare picture." detail="Your route and date are saved. Try again to retrieve the latest observations." retry={resource.retry} />
       : resource.data?.current ? <><div className="tk-result-top"><FareCard fare={resource.data.current} /><PriceContext fare={resource.data.current} /></div><p className="tk-data-credit">Google Flights via SerpAPI <span>·</span> Price intelligence by VayuSetu</p>
-        <FarePressureCalendar departureDate={date} routeId={route} />
+        <FarePressureCalendar departureDate={date} routeId={route} fare={resource.data.current} />
         <FlightComparison flights={resource.data.flights ?? []} />
-      </> : !resource.loading && !resource.error ? <FarePressureCalendar departureDate={date} routeId={route} /> : null}
+      </> : !resource.loading && !resource.error ? <FarePressureCalendar departureDate={date} routeId={route} fare={null} /> : null}
     {!resource.loading && <FlightJourneyVisual />}
   </div>;
 }

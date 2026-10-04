@@ -1,5 +1,5 @@
 (() => {
-  const {money, complete, normalize, positive} = Tickety.context;
+  const {money, complete, normalize} = Tickety.context;
   function el(tag, text, className) {
     const node = document.createElement(tag);
     if (text != null) node.textContent = text;
@@ -34,27 +34,6 @@
     function route(body,context) {
       body.append(el('h2',`${context.origin} → ${context.destination}`),el('p',context.departureDate,'tk-muted'));
     }
-    function trend(body,data) {
-      const points = (data.leadTime || []).filter(p => positive(p.fare));
-      const details = el('details'), summary = el('summary','How fares change'); details.append(summary);
-      if (points.length < 2) details.append(el('p','Not enough observations to show a trend.','tk-muted'));
-      else {
-        const today = new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Kolkata',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
-        const days = Math.round((Date.parse(data.departureDate)-Date.parse(today))/86400000);
-        details.append(el('p',`Your booking window: ${days} days before departure.`, 'tk-muted'));
-        const chart = el('div',null,'tk-chart'); chart.setAttribute('role','img');
-        chart.setAttribute('aria-label',`Stored route minima by days before departure: ${data.leadTime.map(p => `${p.days} days: ${money(p.fare)}`).join('; ')}`);
-        const max = Math.max(...points.map(p => p.fare));
-        for (const p of data.leadTime) {
-          const cell = el('div'); cell.setAttribute('aria-current',String(days === p.days));
-          cell.append(el('span',positive(p.fare) ? money(p.fare) : '—'));
-          if (positive(p.fare)) { const bar = el('span',null,'tk-bar'); bar.style.height = `${p.fare/max*72}px`; cell.append(bar); }
-          cell.append(el('span',`${p.days}d`)); chart.append(cell);
-        }
-        details.append(chart,el('p','Observed route minima; itineraries may differ. Missing windows are not estimated.','tk-muted'));
-      }
-      body.append(details);
-    }
     function result(data) {
       const body = card(data.hasData ? 'ready' : 'unavailable'); route(body,{...data.route,departureDate:data.departureDate});
       body.append(el('p',data.fareSource === 'provided' ? 'Fare you supplied · INR' : 'Latest stored fare · INR','tk-muted'));
@@ -68,11 +47,6 @@
       const diff = data.differenceFromRange;
       if (data.classificationBasis === 'observed_typical_range' && Number.isFinite(diff)) {
         body.append(el('p',diff < 0 ? `${money(-diff)} below the observed typical range.` : diff > 0 ? `${money(diff)} above the observed typical range.` : 'Within the observed typical range.'));
-      } else if (data.classificationBasis === 'google_flights_stored_search') body.append(el('p','Google Flights classification from the stored search.','tk-muted'));
-      body.append(el('p','One-way · Economy · One adult · City-pair context','tk-muted'));
-      if (data.hasData) {
-        body.append(el('p',`Google Flights via SerpAPI. Observed ${data.collectedAt || data.observationDate || 'time unavailable'}. Stored observations may differ from live quotes.`, 'tk-muted'));
-        trend(body,data);
       }
       Tickety.extras.notes(body,data);
       Tickety.extras.alertForm(body,data);
