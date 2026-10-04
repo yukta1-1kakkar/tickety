@@ -251,7 +251,12 @@ def fare_intelligence(
     route_id: str = Query(..., min_length=1, max_length=50),
     db: Session = Depends(get_db),
 ):
-    query = eligible(db, departure_date).filter(Fare.route_id == route_id.strip().upper())
+    return route_intelligence(db, departure_date, route_id.strip().upper())
+
+
+def route_intelligence(db: Session, departure_date: date, route_id: str, aliases: tuple[str, ...] = ()):
+    """Shared read-only query for the website and extension; no scraping."""
+    query = eligible(db, departure_date).filter(Fare.route_id.in_((route_id, *aliases)))
     current = query.options(load_only(*(getattr(Fare, f) for f in FIELDS))).order_by(*latest_order()).first()
     flights = []
     if current:

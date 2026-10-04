@@ -1,0 +1,80 @@
+{
+  "coverageYears": [
+    2026
+  ],
+  "sourceUrl": "https://nhai.gov.in/assets/pdf/List_of_holidays-2026.pdf",
+  "events": {
+    "2026-01-01": {
+      "name": "New Year’s Day",
+      "kind": "festival"
+    },
+    "2026-01-23": {
+      "name": "Basant Panchami",
+      "kind": "festival"
+    },
+    "2026-01-26": {
+      "name": "Republic Day",
+      "kind": "public"
+    },
+    "2026-03-04": {
+      "name": "Holi",
+      "kind": "festival"
+    },
+    "2026-03-21": {
+      "name": "Id-ul-Fitr",
+      "kind": "festival"
+    },
+    "2026-03-31": {
+      "name": "Mahavir Jayanti",
+      "kind": "festival"
+    },
+    "2026-04-03": {
+      "name": "Good Friday",
+      "kind": "public"
+    },
+    "2026-05-01": {
+      "name": "Buddha Purnima",
+      "kind": "festival"
+    },
+    "2026-05-27": {
+      "name": "Id-ul-Zuha",
+      "kind": "festival"
+    },
+    "2026-06-26": {
+      "name": "Muharram",
+      "kind": "festival"
+    },
+    "2026-08-15": {
+      "name": "Independence Day",
+      "kind": "public"
+    },
+    "2026-08-26": {
+      "name": "Id-e-Milad",
+      "kind": "festival"
+    },
+    "2026-09-04": {
+      "name": "Janmashtami",
+      "kind": "festival"
+    },
+    "2026-10-02": {
+      "name": "Gandhi Jayanti",
+      "kind": "public"
+    },
+    "2026-10-20": {
+      "name": "Dussehra",
+      "kind": "festival"
+    },
+    "2026-11-08": {
+      "name": "Diwali",
+      "kind": "festival"
+    },
+    "2026-11-24": {
+      "name": "Guru Nanak Jayanti",
+      "kind": "festival"
+    },
+    "2026-12-25": {
+      "name": "Christmas Day",
+      "kind": "festival"
+    }
+  }
+}

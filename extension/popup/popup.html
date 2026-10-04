@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Tickety</title>
+<link rel="stylesheet" href="../ui/ticketyWidget.css"><link rel="stylesheet" href="popup.css"></head>
+<body><main id="insight"></main><footer class="tk-root">
+<p class="tk-muted">Your airfare intelligence companion</p>
+<button id="detect" type="button">Detect on this page</button>
+<button id="manual" type="button">Enter flight manually</button>
+<details id="alerts-panel"><summary>My fare alerts</summary><button id="enable-alerts" type="button">Enable desktop notifications</button><button id="check-alerts" type="button">Check alerts now</button><p id="alerts-status" role="status" class="tk-muted"></p><div id="alerts-list"></div></details>
+<details><summary>Settings</summary><label>Backend environment<select id="environment"><option value="local">Local development</option><option value="production">Production</option></select></label><p class="tk-muted">Production needs the extension API deployed. Local uses port 8000.</p></details>
+<details><summary>Supported sites</summary><p>Google Flights: English search controls. Live Delhi–Mumbai route and date detection tested. Automatic fare capture needs an unambiguous selected flight; otherwise enter the fare manually.</p><p class="tk-muted">Other sites: experimental detection only when you click “Detect on this page”. Manual entry is always available. MakeMyTrip, Cleartrip, EaseMyTrip, Air India, IndiGo and Akasa have no verified adapter yet.</p></details>
+<a id="open" target="_blank" rel="noopener noreferrer">Open Tickety ↗</a>
+<p class="tk-muted">Only confirmed flight context is sent to Tickety when you check a fare. No browsing history or page content is uploaded.</p>
+</footer><script src="../config.js"></script><script src="../utils/context.js"></script><script src="../ui/mascot.js"></script><script src="../ui/insightExtras.js"></script><script src="../ui/ticketyWidget.js"></script><script src="popup.js"></script><script src="alerts.js"></script></body></html>

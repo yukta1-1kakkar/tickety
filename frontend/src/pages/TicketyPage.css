@@ -388,3 +388,10 @@
 .vayusetu-workspace { background: #f6f8f3; }
 .vayusetu-workspace .intel-card { border-radius: 8px; box-shadow: none; }
 .vayusetu-workspace .intel-card:hover { box-shadow: none; }
+
+/* Calendar proximity colours describe travel dates, not predicted fares. */
+.tk-calendar-day.is-before-event { background:#fff4e4; border-color:#ead4b4; }
+.tk-calendar-day.is-after-event { background:#ebf2fa; border-color:#ccdcec; }
+.tk-calendar-day .tk-event-proximity { font-size:9px; color:#657268; line-height:1.4; }
+.tk-calendar-legend i.is-before-event { background:#ecd0a1; }
+.tk-calendar-legend i.is-after-event { background:#b8d4ec; }

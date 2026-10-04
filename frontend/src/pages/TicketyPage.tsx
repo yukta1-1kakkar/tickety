@@ -12,7 +12,7 @@ import './TicketyPage.css';
 type TicketyContext = { catalog: Resource<Catalog> };
 
 function TicketyMark() {
-  return <span className="tk-brand"><span className="tk-brand-mark" aria-hidden="true"><svg width="25" height="25" viewBox="0 0 25 25" fill="none"><path d="M4 5h17M12.5 5v16M4 14c4-5 13-5 17 0" stroke="currentColor" strokeWidth="2.3" /><circle cx="12.5" cy="21" r="2" fill="currentColor" /></svg></span>tickety<span className="tk-brand-period">.</span></span>;
+  return <span className="tk-brand"><span className="tk-brand-mark" aria-hidden="true"><img src="/tickety-plane.svg" width="36" height="36" alt="" /></span>tickety<span className="tk-brand-period">.</span></span>;
 }
 
 function ConsumerNav() {

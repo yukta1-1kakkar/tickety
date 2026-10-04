@@ -44,6 +44,19 @@ async function noOverflow(page: Page) {
   expect(overflow).toEqual([]);
 }
 
+test('Tickety plane branding and three-day Diwali travel window', async ({ page }) => {
+  await mockApi(page);
+  await page.goto('/fare?route=DEL-BOM&date=2026-11-06');
+  await expect(page).toHaveTitle('Tickety — Know your fare before you book.');
+  await expect(page.locator('.tk-nav .tk-brand')).toHaveText('tickety.');
+  await expect(page.locator('.tk-nav img')).toHaveAttribute('src','/tickety-plane.svg');
+  const calendar=page.getByRole('region',{name:'Fare pressure calendar'});
+  await expect(calendar.locator('.tk-calendar-day.is-before-event').filter({hasText:'Diwali'})).toHaveCount(3);
+  await expect(calendar.locator('.tk-calendar-day.is-after-event').filter({hasText:'Diwali'})).toHaveCount(3);
+  await expect(calendar.locator('.is-selected')).toContainText('2d before Diwali');
+  await noOverflow(page);
+});
+
 test('home to fare, actual context, missing windows, flight sorting and responsive layout', async ({ page }, info) => {
   const errors: string[] = [];
   page.on('pageerror', error => errors.push(error.message));

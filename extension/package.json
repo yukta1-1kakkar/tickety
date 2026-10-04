@@ -1,0 +1,12 @@
+{
+  "name": "tickety-extension",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build:mascot": "node scripts/build-mascot.mjs",
+    "typecheck:mascot": "node ../frontend/node_modules/typescript/bin/tsc --noEmit --target ES2022 --module ESNext --moduleResolution bundler --lib ES2022,DOM --skipLibCheck mascot/entry.ts",
+    "test": "node --test tests/unit.test.cjs",
+    "check": "node scripts/check.cjs",
+    "test:browser": "node ../frontend/node_modules/@playwright/test/cli.js test --config playwright.config.cjs"
+  }
+}
