@@ -229,12 +229,12 @@ URL before building the frontend. Airfare metrics never fall back to demo data.
 
 ## Deployed frontend/backend integration
 
-- Frontend: `https://vayusetu-ten.vercel.app`
-- Backend: `https://vayusetu.onrender.com`
-- Production API base: `https://vayusetu.onrender.com/api`
+- Frontend: `https://tickety-airfare.vercel.app`
+- Backend: `https://vayusetu-serpapi.onrender.com`
+- Production API base: `https://vayusetu-serpapi.onrender.com/api`
 
 Vite reads the deployed API base from `frontend/.env.production`. Render must
-set `FRONTEND_ORIGINS=https://vayusetu-ten.vercel.app`; add any Vercel preview
+set `FRONTEND_ORIGINS=https://tickety-airfare.vercel.app`; add any Vercel preview
 or custom domains to that comma-separated value explicitly. Render should start
 the API with `uvicorn app.main:app --host 0.0.0.0 --port $PORT`.
 

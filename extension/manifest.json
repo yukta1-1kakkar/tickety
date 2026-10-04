@@ -7,7 +7,7 @@
   "icons": {"16":"icons/tickety-16.png","32":"icons/tickety-32.png","48":"icons/tickety-48.png","128":"icons/tickety-128.png"},
   "permissions": ["storage", "activeTab", "scripting", "alarms"],
   "optional_permissions": ["notifications"],
-  "host_permissions": ["http://127.0.0.1/*", "http://localhost/*", "https://vayusetu.onrender.com/*"],
+  "host_permissions": ["http://127.0.0.1/*", "http://localhost/*", "https://vayusetu-serpapi.onrender.com/*"],
   "background": {"service_worker": "background.js"},
   "action": {"default_title": "Tickety airfare intelligence", "default_popup": "popup/popup.html", "default_icon":{"16":"icons/tickety-16.png","32":"icons/tickety-32.png"}},
   "content_scripts": [{
